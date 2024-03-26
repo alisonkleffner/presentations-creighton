@@ -1,0 +1,300 @@
+---
+title: "Visualization of Correlation within Spatial Experimental Plots"
+subtitle: "Graphics Group"
+author: "Alison Kleffner"
+date: "Department of Mathematics, Creighton University"
+output:
+  xaringan::moon_reader:
+    seal: false
+    includes:
+      after_body:
+        "js-addins.html"
+    mathjax: "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML"
+    css: ["default", "metropolis-fonts", "metropolis" ,"css/modal.css", "css/sizeformat.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightlines: true
+      countIncrementalSlides: true
+---
+class:title-slide-custom
+
+```{r, child = "style.Rmd"}
+```
+
+
+```{r setup, echo = FALSE, message = FALSE, warning = FALSE}
+# Packages
+library(emoji)
+library(purrr)
+library(tidyverse)
+library(gridExtra)
+library(nullabor)
+library(scales)
+library(knitr)
+library(kableExtra)
+library(RefManageR)
+library(fontawesome)
+library(shiny)
+# download_fontawesome()
+
+# References
+bib <- ReadBib("bib/thesis.bib", check = FALSE)
+ui <- "- "
+
+# R markdown options
+knitr::opts_chunk$set(echo = FALSE, 
+                      message = FALSE, 
+                      warning = FALSE, 
+                      cache = TRUE,
+                      dpi = 300)
+options(htmltools.dir.version = FALSE)
+options(knitr.kable.NA = '')
+```
+
+```{r, include = F, eval = T, cache = T}
+clean_file_name <- function(x) {
+  basename(x) %>% str_remove("\\..*?$") %>% str_remove_all("[^[A-z0-9_]]")
+}
+img_modal <- function(src, alt = "", id = clean_file_name(src), other = "") {
+  
+  other_arg <- paste0("'", as.character(other), "'") %>%
+    paste(names(other), ., sep = "=") %>%
+    paste(collapse = " ")
+  
+  js <- glue::glue("<script>
+        /* Get the modal*/
+          var modal{id} = document.getElementById('modal{id}');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var img{id} = document.getElementById('img{id}');
+          var modalImg{id} = document.getElementById('imgmodal{id}');
+          var captionText{id} = document.getElementById('caption{id}');
+          img{id}.onclick = function(){{
+            modal{id}.style.display = 'block';
+            modalImg{id}.src = this.src;
+            captionText{id}.innerHTML = this.alt;
+          }}
+          /* When the user clicks on the modalImg, close it*/
+          modalImg{id}.onclick = function() {{
+            modal{id}.style.display = 'none';
+          }}
+</script>")
+  
+  html <- glue::glue(
+     " <!-- Trigger the Modal -->
+<img id='img{id}' src='{src}' alt='{alt}' {other_arg}>
+<!-- The Modal -->
+<div id='modal{id}' class='modal'>
+  <!-- Modal Content (The Image) -->
+  <img class='modal-content' id='imgmodal{id}'>
+  <!-- Modal Caption (Image Text) -->
+  <div id='caption{id}' class='modal-caption'></div>
+</div>
+"
+  )
+  write(js, file = "js-addins.html", append = T)
+  return(html)
+}
+# Clean the file out at the start of the compilation
+write("", file = "js-addins.html")
+```
+
+<br><br><br>
+## Visualization of Correlation within Spatial Experimental Plots
+#### Alison Kleffner
+#### Department of Mathematics, Creighton University
+##### `r fa("envelope", fill = "black")` [alisonkleffner@creighton.edu](email.address@creighton.edu)
+##### `r fa("home", fill = "black")` [https://alison-kleffner.netlify.app/](https://alison-kleffner.netlify.app/)
+##### `r fa("github", fill = "black")` [alisonkleffner](https://github.com/alisonkleffner)
+<br><br>
+.medium[*Slides: https://bit.ly/slide-url*]
+
+---
+class:primary
+# Outline
+
+`r fa_i("chart-bar")` Background
+
+`r fa_i("list")` Research Objectives
+
+---
+class:primary
+# Spatial Data
+
+Spatial data relates to a geographical area or location.
+
+- Often, more than one attribute is measured at a location.
+
+**Focus**: However, due to the variables occupying the same space, multivariate spatial data is complex
+
+- The spatial information provides additional context, so should be included
+- Difficulties in visualization due to issues like clutter `r Citep(bib[[c("he-mult-2019")]])`
+
+**Example**: Visualization of crop input application versus crop yield
+
+---
+class:primary
+# Background
+
+- With a projected increase in future crop demand, researchers are conducting studies on crop input application to increase yield, focusing on sustainability `r Citep(bib[[c("tilman_sustainalbe_2011")]])`
+
+- Crop Input Example: Nitrogen Fertilizer
+  + Nitrogen is an essential component of food production as allows plants to photosynthesize efficiently `r Citep(bib[[c("MAHESWARI2017175")]])`
+  + Nearly half of the nitrogen fertilizer supplied to the field is not used by the crops `r Citep(bib[[c("billen_nitrogen_2013")]])`
+  + This excess nitrogen can be harmful
+
+- Hence, research needs to be conducted on determining input rates that increase crop yield, and are also more sustainable.
+
+---
+class:primary
+# Comparative Graphics
+
+`r Citet(bib[[c("gleicher2011")]])` surveyed journal articles and grouped comparative layouts into: superposition, juxtaposition, explicit encoding, or a hybrid of
+two of the previous arrangements.
+
+.center[
+```{r results='asis', echo = F, include = T, cache = T, eval = TRUE}
+i1 <- img_modal(src = "images/comparative-graphs.png", alt = "Alternative text description goes here.",other=list(width="25%"))
+
+c(str_split(i1, "\\n", simplify = T)[1:2],
+  str_split(i1, "\\n", simplify = T)[3:9]
+  ) %>% paste(collapse = "\n") %>% cat()
+```
+]
+
+A). Juxtaposition: side-by-side
+- Benefits: less issues with visual clutter and easier to create
+- Drawbacks: comparative burden is placed on the user
+
+B). Superposition: multiple objects in same coordinate system
+
+- Benefits: Easier to compare as users can use perception rather than memory
+- Drawbacks: clutter
+
+C). Explicit Encoding: Directly encode relationship
+
+- Benefits: Reader directly shown desired relationship
+- Drawbacks: Lose data context
+
+---
+class:primary
+# Current Example: Superposition
+
+.center[
+
+```{r results='asis', echo = F, include = T, cache = T, eval = TRUE}
+i1 <- img_modal(src = "images/old_map.jpg", alt = "Alternative text description goes here.",other=list(width="25%"))
+
+c(str_split(i1, "\\n", simplify = T)[1:2],
+  str_split(i1, "\\n", simplify = T)[3:9]
+  ) %>% paste(collapse = "\n") %>% cat()
+```
+
+]
+
+--
+
+Issues with this Graph:
+
+- Multiple dots on top of one another
+  + Obscures true number of dots, harder to find patterns
+  + Visual cues, like color, becomes partially obstructed, reducing search efficiency `r Citep(bib[[c("BRAVO2004a", "BRAVO2004b")]])`
+  + Overburdens human perception, causing errors in performing tasks `r Citep(bib[[c("huang2009")]])`
+
+---
+class:primary
+# Current Example: Juxtaposition
+
+.center[
+
+```{r results='asis', echo = F, include = T, cache = T, eval = TRUE}
+i1 <- img_modal(src = "images/juxtaposed-ex.jpeg", alt = "Alternative text description goes here.",other=list(width="40%"))
+
+c(str_split(i1, "\\n", simplify = T)[1:2],
+  str_split(i1, "\\n", simplify = T)[3:9]
+  ) %>% paste(collapse = "\n") %>% cat()
+```
+
+]
+
+--
+
+Issues with this Graph:
+
+- Most of the comparative burden placed on users' memory
+  + A mental image is relied on for comparison in these scenarios, as the user moves their eyes between images (shifting focus).
+  + The plot contents may not be accurately formed in working memory, leading to potential errors when deriving patterns `r Citep(bib[[c("lyi2021")]])`
+  + Lack of visual cues for locations
+  
+---
+class:primary
+# In Literature
+
+.center[
+```{r results='asis', echo = F, include = T, cache = T, eval = TRUE}
+i1 <- img_modal(src = "images/maxwell.png", alt = "Alternative text description goes here.", other=list(width="40%"))
+i2 <- img_modal(src = "images/trevisan.png", alt = "Alternative text description goes here.", other=list(width="40%"))
+
+c(str_split(i1, "\\n", simplify = T)[1:2],
+  str_split(i2, "\\n", simplify = T)[1:2],
+  str_split(i1, "\\n", simplify = T)[3:9],
+  str_split(i2, "\\n", simplify = T)[3:9]
+  ) %>% paste(collapse = "\n") %>% cat()
+```
+]
+
+--
+
+Color Schemes!
+
+
+---
+class:primary
+# Redesign: Color Blending
+
+---
+class:primary
+# Redesign: Bivariate Color Map
+
+---
+class:primary
+# Redesign: Correlation Plot
+
+---
+class:primary
+# Redesign: Correlation Plot Interactive
+
+---
+class:primary
+# Future
+
+**Example**: Visualization of crop input application versus crop yield
+
+`r Citep(bib[[c("loy_model_2017", "ciccione2021", "carroll1996mathematical")]])`
+
+`r Citet(bib[[c("loy_model_2017", "ciccione2021", "carroll1996mathematical")]])`
+
+
+---
+class:primary
+# References
+<font size="2">
+```{r, print_refs1, results='asis', echo=FALSE, warning=FALSE, message=FALSE}
+print(bib[[c("loy_model_2017")]], 
+      .opts = list(check.entries = FALSE, style = "html", bib.style = "authoryear")
+      )
+```
+</font>
+
+---
+class:inverse
+<br>
+<br>
+<br>
+.center[
+# Questions?
+<br>
+<br>
+`r fa("envelope", fill = "white")` **alisonkleffner@creighton.edu**
+`r fa("github", fill = "white")` **alisonkleffner**
+]

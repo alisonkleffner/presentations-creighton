@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Visualization of Correlation within Spatial Experimental Plots</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Alison Kleffner" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/metropolis-fonts.css" rel="stylesheet" />
+    <link href="libs/remark-css/metropolis.css" rel="stylesheet" />
+    <link href="libs/font-awesome/css/all.min.css" rel="stylesheet" />
+    <link href="libs/font-awesome/css/v4-shims.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/modal.css" type="text/css" />
+    <link rel="stylesheet" href="css/sizeformat.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+class:title-slide-custom
+
+
+&lt;style&gt;
+
+/* colors: #005CA9 for blue, #00235D for navy blue, #6CADDE for light blue, #828282 for gray, #C8C8C8 for light gray, and #FFFFFF for white. */
+/* define the new color palette here! */
+a, a &gt; code {
+  color: #00235D;
+  text-decoration: none;
+}
+
+.title-slide h2::after, .mline h1::after {
+  content: '';
+  display: block;
+  border: none;
+  background-color: #00235D;
+  color: #00235D;
+  height: 2px;
+}
+
+.remark-slide-content {
+  background-color: #FFFFFF;
+  border-top: 80px solid #00235D;
+  font-size: 20px;
+  font-weight: 300;
+  line-height: 1.5;
+  &lt;!-- padding: 1em 2em 1em 2em --&gt;
+  background-image: url(css/CU.png);
+	background-position: 2% 98%;
+	background-size: 10%;
+	border-bottom: 0;
+}
+
+.inverse {
+  background-color: #00235D;
+  &lt;!-- border-top: 20px solid #696969; --&gt;
+  &lt;!-- background-image: none; --&gt;
+	&lt;!-- background-position: 50% 75%; --&gt;
+  &lt;!-- background-size: 150px; --&gt;
+}
+
+.remark-slide-content &gt; h1 {
+  font-family: 'Roboto';
+  font-weight: 300;
+  font-size: 45px;
+  margin-top: -95px;
+  margin-left: -00px;
+  color: #FFFFFF;
+}
+
+.title-slide {
+  background-color: #FFFFFF;
+  &lt;!-- border-left: 80px solid 	#8B0000; --&gt;
+  background-image:  url(css/CU.png);
+	background-position: 98% 98%;
+	&lt;!-- background-attachment: fixed, fixed; --&gt;
+	background-size: 20%;
+	border-bottom: 0;
+	border: 10px solid 	#00235D;
+	&lt;!-- background: transparent; --&gt;
+}
+
+.title-slide &gt; h1  {
+  color: #111111;
+  font-size: 32px;
+  text-shadow: none;
+  font-weight: 500;
+  text-align: left;
+  margin-left: 15px;
+  padding-top: 80px;
+}
+.title-slide &gt; h2  {
+  margin-top: -25px;
+  padding-bottom: -20px;
+  color: #111111;
+  text-shadow: none;
+  font-weight: 100;
+  font-size: 28px;
+  text-align: left;
+  margin-left: 15px;
+}
+.title-slide &gt; h3  {
+  color: #111111;
+  text-shadow: none;
+  font-weight: 100;
+  font-size: 28px;
+  text-align: left;
+  margin-left: 15px;
+  margin-bottom: -20px;
+}
+
+body {
+  font-family: 'Roboto';
+  font-weight: 300;
+}
+
+.remark-slide-number {
+  font-size: 13pt;
+  font-family: 'Roboto';
+  color: #272822;
+  opacity: 1;
+}
+
+.inverse .remark-slide-number {
+  font-size: 13pt;
+  font-family: 'Roboto';
+  color: #FAFAFA;
+  opacity: 1;
+}
+
+.title-slide-custom .remark-slide-number {
+  display: none;
+}
+
+.title-slide-custom h3::after, .mline h1::after {
+  content: '';
+  display: block;
+  border: none;
+  background-color: #00235D;
+  color: #00235D;
+  height: 2px;
+}
+
+.title-slide-custom {
+  background-color: #FFFFFF;
+  &lt;!-- border-left: 80px solid 	#8B0000; --&gt;
+  background-image:  url(css/CU.png);
+	background-position: 98% 98%;
+	&lt;!-- background-attachment: fixed, fixed; --&gt;
+	background-size: 20%;
+	border-bottom: 0;
+	border: 10px solid 	#00235D;
+	&lt;!-- background: transparent; --&gt;
+}
+
+.title-slide-custom &gt; h1  {
+  color: #111111;
+  font-size: 40px;
+  text-shadow: none;
+  font-weight: 500;
+  text-align: left;
+  margin-left: 15px;
+  padding-top: 80px;
+  padding-bottom: 10px;
+}
+.title-slide-custom &gt; h2  {
+  margin-top: -25px;
+  padding-bottom: 30px;
+  color: #111111;
+  text-shadow: none;
+  font-weight: 100;
+  font-size: 32px;
+  text-align: left;
+  margin-left: 15px;
+}
+.title-slide-custom &gt; h3  {
+  margin-top: -25px;
+  padding-bottom: -25px;
+  color: #111111;
+  text-shadow: none;
+  font-weight: 100;
+  font-size: 32px;
+  text-align: left;
+  margin-left: 15px;
+}
+.title-slide-custom &gt; h4  {
+  color: #111111;
+  text-shadow: none;
+  font-weight: 100;
+  font-size: 28px;
+  text-align: left;
+  margin-left: 15px;
+  margin-bottom: -30px;
+  padding-bottom: -25px;
+}
+.title-slide-custom &gt; h5  {
+  color: #111111;
+  text-shadow: none;
+  font-weight: 100;
+  font-size: 24px;
+  text-align: left;
+  margin-left: 15px;
+  margin-bottom: -40px;
+}
+
+&lt;!-- img { --&gt;
+&lt;!--   max-width: 50%; --&gt;
+&lt;!-- } --&gt;
+
+&lt;/style&gt;
+
+
+
+
+
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;
+## Visualization of Correlation within Spatial Experimental Plots
+#### Alison Kleffner
+#### Department of Mathematics, Creighton University
+##### <svg aria-hidden="true" role="img" viewBox="0 0 512 512" style="height:1em;width:1em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:black;overflow:visible;position:relative;"><path d="M64 112c-8.8 0-16 7.2-16 16v22.1L220.5 291.7c20.7 17 50.4 17 71.1 0L464 150.1V128c0-8.8-7.2-16-16-16H64zM48 212.2V384c0 8.8 7.2 16 16 16H448c8.8 0 16-7.2 16-16V212.2L322 328.8c-38.4 31.5-93.7 31.5-132 0L48 212.2zM0 128C0 92.7 28.7 64 64 64H448c35.3 0 64 28.7 64 64V384c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128z"/></svg> [alisonkleffner@creighton.edu](email.address@creighton.edu)
+##### <svg aria-hidden="true" role="img" viewBox="0 0 576 512" style="height:1em;width:1.12em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:black;overflow:visible;position:relative;"><path d="M575.8 255.5c0 18-15 32.1-32 32.1h-32l.7 160.2c0 2.7-.2 5.4-.5 8.1V472c0 22.1-17.9 40-40 40H456c-1.1 0-2.2 0-3.3-.1c-1.4 .1-2.8 .1-4.2 .1H416 392c-22.1 0-40-17.9-40-40V448 384c0-17.7-14.3-32-32-32H256c-17.7 0-32 14.3-32 32v64 24c0 22.1-17.9 40-40 40H160 128.1c-1.5 0-3-.1-4.5-.2c-1.2 .1-2.4 .2-3.6 .2H104c-22.1 0-40-17.9-40-40V360c0-.9 0-1.9 .1-2.8V287.6H32c-18 0-32-14-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231.5c8 7 12 15 11 24z"/></svg> [https://alison-kleffner.netlify.app/](https://alison-kleffner.netlify.app/)
+##### <svg aria-hidden="true" role="img" viewBox="0 0 496 512" style="height:1em;width:0.97em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:black;overflow:visible;position:relative;"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg> [alisonkleffner](https://github.com/alisonkleffner)
+&lt;br&gt;&lt;br&gt;
+.medium[*Slides: https://bit.ly/slide-url*]
+
+---
+class:primary
+# Outline
+
+<i class="far fa-chart-bar" role="presentation" aria-label="chart-bar icon"></i> Background
+
+<i class="fas fa-list" role="presentation" aria-label="list icon"></i> Research Objectives
+
+---
+class:primary
+# Spatial Data
+
+Spatial data relates to a geographical area or location.
+
+- Often, more than one attribute is measured at a location.
+
+**Focus**: However, due to the variables occupying the same space, multivariate spatial data is complex
+
+- The spatial information provides additional context, so should be included
+- Difficulties in visualization due to issues like clutter (He, Tao, Wang et al., 2019)
+
+**Example**: Visualization of crop input application versus crop yield
+
+---
+class:primary
+# Background
+
+- With a projected increase in future crop demand, researchers are conducting studies on crop input application to increase yield, focusing on sustainability (Tilman, Balzer, Hill et al., 2011)
+
+- Crop Input Example: Nitrogen Fertilizer
+  + Nitrogen is an essential component of food production as allows plants to photosynthesize efficiently (Maheswari, Murthy, and Shanker, 2017)
+  + Nearly half of the nitrogen fertilizer supplied to the field is not used by the crops (Billen, Garnier, and Lassaletta, 2013)
+  + This excess nitrogen can be harmful
+
+- Hence, research needs to be conducted on determining input rates that increase crop yield, and are also more sustainable.
+
+---
+class:primary
+# Comparative Graphics
+
+Gleicher, Albers, Walker et al. (2011) surveyed journal articles and grouped comparative layouts into: superposition, juxtaposition, explicit encoding, or a hybrid of
+two of the previous arrangements.
+
+.center[
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imgcomparativegraphs' src='images/comparative-graphs.png' alt='Alternative text description goes here.' width='25%'&gt;
+&lt;!-- The Modal --&gt;
+&lt;div id='modalcomparativegraphs' class='modal'&gt;
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodalcomparativegraphs'&gt;
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captioncomparativegraphs' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+]
+
+A). Juxtaposition: side-by-side
+- Benefits: less issues with visual clutter and easier to create
+- Drawbacks: comparative burden is placed on the user
+
+B). Superposition: multiple objects in same coordinate system
+
+- Benefits: Easier to compare as users can use perception rather than memory
+- Drawbacks: clutter
+
+C). Explicit Encoding: Directly encode relationship
+
+- Benefits: Reader directly shown desired relationship
+- Drawbacks: Lose data context
+
+---
+class:primary
+# Current Example: Superposition
+
+.center[
+
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imgold_map' src='images/old_map.jpg' alt='Alternative text description goes here.' width='25%'&gt;
+&lt;!-- The Modal --&gt;
+&lt;div id='modalold_map' class='modal'&gt;
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodalold_map'&gt;
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captionold_map' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+]
+
+--
+
+Issues with this Graph:
+
+- Multiple dots on top of one another
+  + Obscures true number of dots, harder to find patterns
+  + Visual cues, like color, becomes partially obstructed, reducing search efficiency (Bravo and Farid, 2004a; Bravo and Farid, 2004b)
+  + Overburdens human perception, causing errors in performing tasks (Huang, Eades, and Hong, 2009)
+
+---
+class:primary
+# Current Example: Juxtaposition
+
+.center[
+
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imgjuxtaposedex' src='images/juxtaposed-ex.jpeg' alt='Alternative text description goes here.' width='40%'&gt;
+&lt;!-- The Modal --&gt;
+&lt;div id='modaljuxtaposedex' class='modal'&gt;
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodaljuxtaposedex'&gt;
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captionjuxtaposedex' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+]
+
+--
+
+Issues with this Graph:
+
+- Most of the comparative burden placed on users' memory
+  + A mental image is relied on for comparison in these scenarios, as the user moves their eyes between images (shifting focus).
+  + The plot contents may not be accurately formed in working memory, leading to potential errors when deriving patterns (LYi, Jo, and Seo, 2021)
+  + Lack of visual cues for locations
+  
+---
+class:primary
+# In Literature
+
+.center[
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imgmaxwell' src='images/maxwell.png' alt='Alternative text description goes here.' width='40%'&gt;
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imgtrevisan' src='images/trevisan.png' alt='Alternative text description goes here.' width='40%'&gt;
+&lt;!-- The Modal --&gt;
+&lt;div id='modalmaxwell' class='modal'&gt;
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodalmaxwell'&gt;
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captionmaxwell' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;!-- The Modal --&gt;
+&lt;div id='modaltrevisan' class='modal'&gt;
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodaltrevisan'&gt;
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captiontrevisan' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+]
+
+--
+
+Color Schemes!
+
+
+---
+class:primary
+# Redesign: Color Blending
+
+---
+class:primary
+# Redesign: Bivariate Color Map
+
+---
+class:primary
+# Redesign: Correlation Plot
+
+---
+class:primary
+# Redesign: Correlation Plot Interactive
+
+---
+class:primary
+# Future
+
+**Example**: Visualization of crop input application versus crop yield
+
+(Loy, Hofmann, and Cook, 2017; Ciccione and Dehaene, 2021; Carroll, 1996)
+
+Loy, Hofmann, and Cook (2017); Ciccione and Dehaene (2021); Carroll (1996)
+
+
+---
+class:primary
+# References
+&lt;font size="2"&gt;
+&lt;p&gt;&lt;cite&gt;&lt;a id='bib-loy_model_2017'&gt;&lt;/a&gt;&lt;a href="#cite-loy_model_2017"&gt;Loy, A., H. Hofmann, and D. Cook&lt;/a&gt;
+(2017).
+&amp;ldquo;Model choice and diagnostics for linear mixed-effects models using statistics on street corners&amp;rdquo;.
+In: &lt;em&gt;Journal of Computational and Graphical Statistics&lt;/em&gt; 26.3, pp. 478&amp;ndash;492.&lt;/cite&gt;&lt;/p&gt;
+&lt;/font&gt;
+
+---
+class:inverse
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.center[
+# Questions?
+&lt;br&gt;
+&lt;br&gt;
+<svg aria-hidden="true" role="img" viewBox="0 0 512 512" style="height:1em;width:1em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:white;overflow:visible;position:relative;"><path d="M64 112c-8.8 0-16 7.2-16 16v22.1L220.5 291.7c20.7 17 50.4 17 71.1 0L464 150.1V128c0-8.8-7.2-16-16-16H64zM48 212.2V384c0 8.8 7.2 16 16 16H448c8.8 0 16-7.2 16-16V212.2L322 328.8c-38.4 31.5-93.7 31.5-132 0L48 212.2zM0 128C0 92.7 28.7 64 64 64H448c35.3 0 64 28.7 64 64V384c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128z"/></svg> **alisonkleffner@creighton.edu**
+<svg aria-hidden="true" role="img" viewBox="0 0 496 512" style="height:1em;width:0.97em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:white;overflow:visible;position:relative;"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg> **alisonkleffner**
+]
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightlines": true,
+"countIncrementalSlides": true
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();</script>
+
+<script>
+        /* Get the modal*/
+          var modalexample2 = document.getElementById('modalexample2');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgexample2 = document.getElementById('imgexample2');
+          var modalImgexample2 = document.getElementById('imgmodalexample2');
+          var captionTextexample2 = document.getElementById('captionexample2');
+          imgexample2.onclick = function(){
+            modalexample2.style.display = 'block';
+            modalImgexample2.src = this.src;
+            captionTextexample2.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgexample2.onclick = function() {
+            modalexample2.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalexample3 = document.getElementById('modalexample3');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgexample3 = document.getElementById('imgexample3');
+          var modalImgexample3 = document.getElementById('imgmodalexample3');
+          var captionTextexample3 = document.getElementById('captionexample3');
+          imgexample3.onclick = function(){
+            modalexample3.style.display = 'block';
+            modalImgexample3.src = this.src;
+            captionTextexample3.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgexample3.onclick = function() {
+            modalexample3.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalexample4 = document.getElementById('modalexample4');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgexample4 = document.getElementById('imgexample4');
+          var modalImgexample4 = document.getElementById('imgmodalexample4');
+          var captionTextexample4 = document.getElementById('captionexample4');
+          imgexample4.onclick = function(){
+            modalexample4.style.display = 'block';
+            modalImgexample4.src = this.src;
+            captionTextexample4.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgexample4.onclick = function() {
+            modalexample4.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalexample5 = document.getElementById('modalexample5');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgexample5 = document.getElementById('imgexample5');
+          var modalImgexample5 = document.getElementById('imgmodalexample5');
+          var captionTextexample5 = document.getElementById('captionexample5');
+          imgexample5.onclick = function(){
+            modalexample5.style.display = 'block';
+            modalImgexample5.src = this.src;
+            captionTextexample5.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgexample5.onclick = function() {
+            modalexample5.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalold_map = document.getElementById('modalold_map');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgold_map = document.getElementById('imgold_map');
+          var modalImgold_map = document.getElementById('imgmodalold_map');
+          var captionTextold_map = document.getElementById('captionold_map');
+          imgold_map.onclick = function(){
+            modalold_map.style.display = 'block';
+            modalImgold_map.src = this.src;
+            captionTextold_map.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgold_map.onclick = function() {
+            modalold_map.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalold_map = document.getElementById('modalold_map');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgold_map = document.getElementById('imgold_map');
+          var modalImgold_map = document.getElementById('imgmodalold_map');
+          var captionTextold_map = document.getElementById('captionold_map');
+          imgold_map.onclick = function(){
+            modalold_map.style.display = 'block';
+            modalImgold_map.src = this.src;
+            captionTextold_map.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgold_map.onclick = function() {
+            modalold_map.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalold_map = document.getElementById('modalold_map');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgold_map = document.getElementById('imgold_map');
+          var modalImgold_map = document.getElementById('imgmodalold_map');
+          var captionTextold_map = document.getElementById('captionold_map');
+          imgold_map.onclick = function(){
+            modalold_map.style.display = 'block';
+            modalImgold_map.src = this.src;
+            captionTextold_map.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgold_map.onclick = function() {
+            modalold_map.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modaljuxtaposedex = document.getElementById('modaljuxtaposedex');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgjuxtaposedex = document.getElementById('imgjuxtaposedex');
+          var modalImgjuxtaposedex = document.getElementById('imgmodaljuxtaposedex');
+          var captionTextjuxtaposedex = document.getElementById('captionjuxtaposedex');
+          imgjuxtaposedex.onclick = function(){
+            modaljuxtaposedex.style.display = 'block';
+            modalImgjuxtaposedex.src = this.src;
+            captionTextjuxtaposedex.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgjuxtaposedex.onclick = function() {
+            modaljuxtaposedex.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modaljuxtaposedex = document.getElementById('modaljuxtaposedex');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgjuxtaposedex = document.getElementById('imgjuxtaposedex');
+          var modalImgjuxtaposedex = document.getElementById('imgmodaljuxtaposedex');
+          var captionTextjuxtaposedex = document.getElementById('captionjuxtaposedex');
+          imgjuxtaposedex.onclick = function(){
+            modaljuxtaposedex.style.display = 'block';
+            modalImgjuxtaposedex.src = this.src;
+            captionTextjuxtaposedex.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgjuxtaposedex.onclick = function() {
+            modaljuxtaposedex.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalmaxwell = document.getElementById('modalmaxwell');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgmaxwell = document.getElementById('imgmaxwell');
+          var modalImgmaxwell = document.getElementById('imgmodalmaxwell');
+          var captionTextmaxwell = document.getElementById('captionmaxwell');
+          imgmaxwell.onclick = function(){
+            modalmaxwell.style.display = 'block';
+            modalImgmaxwell.src = this.src;
+            captionTextmaxwell.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgmaxwell.onclick = function() {
+            modalmaxwell.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modaltrevisan = document.getElementById('modaltrevisan');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgtrevisan = document.getElementById('imgtrevisan');
+          var modalImgtrevisan = document.getElementById('imgmodaltrevisan');
+          var captionTexttrevisan = document.getElementById('captiontrevisan');
+          imgtrevisan.onclick = function(){
+            modaltrevisan.style.display = 'block';
+            modalImgtrevisan.src = this.src;
+            captionTexttrevisan.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgtrevisan.onclick = function() {
+            modaltrevisan.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalmaxwell = document.getElementById('modalmaxwell');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgmaxwell = document.getElementById('imgmaxwell');
+          var modalImgmaxwell = document.getElementById('imgmodalmaxwell');
+          var captionTextmaxwell = document.getElementById('captionmaxwell');
+          imgmaxwell.onclick = function(){
+            modalmaxwell.style.display = 'block';
+            modalImgmaxwell.src = this.src;
+            captionTextmaxwell.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgmaxwell.onclick = function() {
+            modalmaxwell.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modaltrevisan = document.getElementById('modaltrevisan');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgtrevisan = document.getElementById('imgtrevisan');
+          var modalImgtrevisan = document.getElementById('imgmodaltrevisan');
+          var captionTexttrevisan = document.getElementById('captiontrevisan');
+          imgtrevisan.onclick = function(){
+            modaltrevisan.style.display = 'block';
+            modalImgtrevisan.src = this.src;
+            captionTexttrevisan.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgtrevisan.onclick = function() {
+            modaltrevisan.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalcomparativegraphs = document.getElementById('modalcomparativegraphs');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgcomparativegraphs = document.getElementById('imgcomparativegraphs');
+          var modalImgcomparativegraphs = document.getElementById('imgmodalcomparativegraphs');
+          var captionTextcomparativegraphs = document.getElementById('captioncomparativegraphs');
+          imgcomparativegraphs.onclick = function(){
+            modalcomparativegraphs.style.display = 'block';
+            modalImgcomparativegraphs.src = this.src;
+            captionTextcomparativegraphs.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgcomparativegraphs.onclick = function() {
+            modalcomparativegraphs.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalold_map = document.getElementById('modalold_map');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgold_map = document.getElementById('imgold_map');
+          var modalImgold_map = document.getElementById('imgmodalold_map');
+          var captionTextold_map = document.getElementById('captionold_map');
+          imgold_map.onclick = function(){
+            modalold_map.style.display = 'block';
+            modalImgold_map.src = this.src;
+            captionTextold_map.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgold_map.onclick = function() {
+            modalold_map.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modaljuxtaposedex = document.getElementById('modaljuxtaposedex');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgjuxtaposedex = document.getElementById('imgjuxtaposedex');
+          var modalImgjuxtaposedex = document.getElementById('imgmodaljuxtaposedex');
+          var captionTextjuxtaposedex = document.getElementById('captionjuxtaposedex');
+          imgjuxtaposedex.onclick = function(){
+            modaljuxtaposedex.style.display = 'block';
+            modalImgjuxtaposedex.src = this.src;
+            captionTextjuxtaposedex.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgjuxtaposedex.onclick = function() {
+            modaljuxtaposedex.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalmaxwell = document.getElementById('modalmaxwell');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgmaxwell = document.getElementById('imgmaxwell');
+          var modalImgmaxwell = document.getElementById('imgmodalmaxwell');
+          var captionTextmaxwell = document.getElementById('captionmaxwell');
+          imgmaxwell.onclick = function(){
+            modalmaxwell.style.display = 'block';
+            modalImgmaxwell.src = this.src;
+            captionTextmaxwell.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgmaxwell.onclick = function() {
+            modalmaxwell.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modaltrevisan = document.getElementById('modaltrevisan');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgtrevisan = document.getElementById('imgtrevisan');
+          var modalImgtrevisan = document.getElementById('imgmodaltrevisan');
+          var captionTexttrevisan = document.getElementById('captiontrevisan');
+          imgtrevisan.onclick = function(){
+            modaltrevisan.style.display = 'block';
+            modalImgtrevisan.src = this.src;
+            captionTexttrevisan.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgtrevisan.onclick = function() {
+            modaltrevisan.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalcomparativegraphs = document.getElementById('modalcomparativegraphs');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgcomparativegraphs = document.getElementById('imgcomparativegraphs');
+          var modalImgcomparativegraphs = document.getElementById('imgmodalcomparativegraphs');
+          var captionTextcomparativegraphs = document.getElementById('captioncomparativegraphs');
+          imgcomparativegraphs.onclick = function(){
+            modalcomparativegraphs.style.display = 'block';
+            modalImgcomparativegraphs.src = this.src;
+            captionTextcomparativegraphs.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgcomparativegraphs.onclick = function() {
+            modalcomparativegraphs.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalold_map = document.getElementById('modalold_map');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgold_map = document.getElementById('imgold_map');
+          var modalImgold_map = document.getElementById('imgmodalold_map');
+          var captionTextold_map = document.getElementById('captionold_map');
+          imgold_map.onclick = function(){
+            modalold_map.style.display = 'block';
+            modalImgold_map.src = this.src;
+            captionTextold_map.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgold_map.onclick = function() {
+            modalold_map.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalold_map = document.getElementById('modalold_map');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgold_map = document.getElementById('imgold_map');
+          var modalImgold_map = document.getElementById('imgmodalold_map');
+          var captionTextold_map = document.getElementById('captionold_map');
+          imgold_map.onclick = function(){
+            modalold_map.style.display = 'block';
+            modalImgold_map.src = this.src;
+            captionTextold_map.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgold_map.onclick = function() {
+            modalold_map.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalmaxwell = document.getElementById('modalmaxwell');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgmaxwell = document.getElementById('imgmaxwell');
+          var modalImgmaxwell = document.getElementById('imgmodalmaxwell');
+          var captionTextmaxwell = document.getElementById('captionmaxwell');
+          imgmaxwell.onclick = function(){
+            modalmaxwell.style.display = 'block';
+            modalImgmaxwell.src = this.src;
+            captionTextmaxwell.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgmaxwell.onclick = function() {
+            modalmaxwell.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modaltrevisan = document.getElementById('modaltrevisan');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgtrevisan = document.getElementById('imgtrevisan');
+          var modalImgtrevisan = document.getElementById('imgmodaltrevisan');
+          var captionTexttrevisan = document.getElementById('captiontrevisan');
+          imgtrevisan.onclick = function(){
+            modaltrevisan.style.display = 'block';
+            modalImgtrevisan.src = this.src;
+            captionTexttrevisan.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgtrevisan.onclick = function() {
+            modaltrevisan.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalcomparativegraphs = document.getElementById('modalcomparativegraphs');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgcomparativegraphs = document.getElementById('imgcomparativegraphs');
+          var modalImgcomparativegraphs = document.getElementById('imgmodalcomparativegraphs');
+          var captionTextcomparativegraphs = document.getElementById('captioncomparativegraphs');
+          imgcomparativegraphs.onclick = function(){
+            modalcomparativegraphs.style.display = 'block';
+            modalImgcomparativegraphs.src = this.src;
+            captionTextcomparativegraphs.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgcomparativegraphs.onclick = function() {
+            modalcomparativegraphs.style.display = 'none';
+          }
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_HTMLorMML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
