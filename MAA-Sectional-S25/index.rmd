@@ -100,41 +100,47 @@ write("", file = "js-addins.html")
 ```
 
 <br><br><br>
-## Visualization of Correlation within Spatial Experimental Plots
+## Visualization and Modeling of Sea Ice Trajectories
 #### Alison Kleffner
 #### Department of Mathematics, Creighton University
 ##### `r fa("envelope", fill = "black")` [alisonkleffner@creighton.edu](email.address@creighton.edu)
 ##### `r fa("home", fill = "black")` [https://alison-kleffner.netlify.app/](https://alison-kleffner.netlify.app/)
 ##### `r fa("github", fill = "black")` [alisonkleffner](https://github.com/alisonkleffner)
 <br><br>
-.medium[*Slides: https://alisonkleffner.github.io/presentations-creighton/graphics-group/S24/index.html#1*]
+.medium[*Slides: https://alisonkleffner.github.io/presentations-creighton/MAA-Sectional-S25/index.html#1*]
 
 ---
 class:primary
-# Outline
-
----
-class:primary
-# Motivation
+# General Motivation
 
 The rapid development of technology, like global position systems (GPS) and geographic information systems (GIS), has led to a dramatic increase in the amount of spatial and spatio-temporal data collected `r Citep(bib[[c("ansari_spatiotemporal_2020")]])` 
 
 + This growth has necessitated the development of new techniques to work with this data `r Citep(bib[[c("yuan_review_2017")]])`
-+ We focus on environmental applications with multivariate spatial data and trajectory data.
 
 ---
 class:primary
-# Motivation
+# Motivation: Trajectories
 
-**Interest**: Discover patterns within the trajectories to help understand their behavior `r  Citep(bib[[c("andrienko_visual_2007")]])` 
+**Interest**: Discover patterns within the trajectories to help understand their behavior and use these behaviors to reconstruct an underlying process.
 
-**A Method**: Visualization during Exploratory Data Analysis (EDA):  
-  + Trajectories are difficult to visualize (messy)
-  + Provide insight into the underlying dynamics driving movement.
+  + Visualize trajectories to provide insight into the underlying dynamics driving movement.
+  + Trajectories are complex, so we can extract features from the raw data `r Citep(bib[[c("climate-viz")]])` - Motivated by the visualization
+  + Use the features and insights to inform modeling
+  
+.center[
+```{r traj-ex,  results='asis', echo = F, include = T, cache = T, eval = TRUE}
 
-**Extract Features**: Since trajectories are complex, so we can extract features from the raw data `r Citep(bib[[c("climate-viz")]])` 
-  + Can use visualization to motivate feature creation
-  + Want to create features that provide a quantitative summary of the movement seen in plots 
+
+i1 <- img_modal(src = "images/traj-example.png", alt = "Example of a Trajectory", other=list(width="40%"))
+
+c(str_split(i1, "\\n", simplify = T)[1:2],
+  str_split(i1, "\\n", simplify = T)[3:9]
+  ) %>% paste(collapse = "\n") %>% cat()
+
+```
+]
+
+
 
 **Case Study**: Arctic Sea Ice Crack Detection
 
@@ -151,8 +157,11 @@ class:primary
 + Cracks, or leads, may form in the ice pack due to dynamic processes
   - Allows for heat from the ocean to be transferred to the atmosphere `r Citep(bib[[c("schreyer_elastic_2006")]])`. 
   - Accounts for half of the heat flux between the ocean and atmosphere `r Citep(bib[[c("badgley_1961")]])`
-+ Previous ice crack detection methods can generally be split into two categories: thermal and deformation. 
-  
+
+**Project Goals**:
+
+- Develop a lead detection method by clustering similar trajectories
+- Develop a model reconstructing the underlying process for interpolation
 
 .center[
 ```{r ice-pic,  results='asis', echo = F, include = T, cache = T, eval = TRUE}
@@ -177,13 +186,19 @@ class:primary
 ```{r grid-pic,  results='asis', echo = F, include = T, cache = T, eval = TRUE}
 
 i1 <- img_modal(src = "images/rgps_grid.jpg", alt = "Example of initial grid used to track movement (Peterson & Sulsky, 2011)", other=list(width="25%"))
+i2 <- img_modal(src = "images/data_example.png", alt = "Missing Data Oh My!", other=list(width="30%"))
+
 
 c(str_split(i1, "\\n", simplify = T)[1:2],
-  str_split(i1, "\\n", simplify = T)[3:9]
+  str_split(i2, "\\n", simplify = T)[1:2],
+  str_split(i1, "\\n", simplify = T)[3:9],
+  str_split(i2, "\\n", simplify = T)[3:9]
   ) %>% paste(collapse = "\n") %>% cat()
 
 ```
 ]
+
+
 
 + Arctic Sea Ice is tracked by NASA's RADARSTAT Geophysical Processor System (RGPS), which uses synthetic aperture radar (SAR) images
 + Each grid cell vertex is assigned an identifier $(j=1,...,n)$ which is used for tracking
@@ -249,8 +264,7 @@ class:primary
 
 + Line segments, with the direction of each trajectory denoted by an arrow at the end `r Citep(bib[[c("andrienko_supporting_2000")]])` 
   - Shows the displacement and direction over time.
-+ This plot violates several guidelines for effective visualization, making it
-unsuitable for presentation.
++ This plot violates several guidelines for effective visualization
   - However, the principle of similarity helps a viewer easily group trajectories that look to move with a similar form in the same direction over time
 
 .center[
@@ -290,90 +304,37 @@ Another drawback of the static trajectory plot is the inability to associated di
 
 ---
 class:primary
-
 # Deriving Numerical Features: Bounding Box
 
-+ We create a bounding box around for each trajectory to represent it's movement
 + Bounding Box Features:
+
   - Length travel in x/y between the minimum and maximum location 
-.center[
-( $x_{max} - x_{min}$ and $y_{max} - y_{min}$)]
   - Length travel in x/y between latest and earliest observation 
-  .center[
-  ( $x_{2} - x_{1}$ and $y_{2} - y_{1}$)]
   - Angle of movement (direction)
+  - Amount of “wiggle”: arc length
 
 .center[
-.pull-left[
-```{r bb-pic1,  results='asis', echo = F, include = T, cache = T, eval = TRUE}
+```{r results='asis', echo = F, include = T, cache = T, eval = TRUE}
+i2 <- img_modal(src = "images/bb_1.png", alt = "(a) Length travel in x/y between latest and earliest observation and (b) Direction", other=list(width="30%"))
+i1 <- img_modal(src = "images/bb_2.png", alt = "Length travel in x/y between the minimum and maximum location", other=list(width="30%"))
+i3 <- img_modal(src = "images/wiggle.png", alt = "Wiggle Calculation", other=list(width="30%"))
 
-
-i1 <- img_modal(src = "images/bb_1.png", alt = "Points used to Develop Bounding Box 1", other=list(width="75%"))
 
 c(str_split(i1, "\\n", simplify = T)[1:2],
-  str_split(i1, "\\n", simplify = T)[3:9]
-  ) %>% paste(collapse = "\n") %>% cat()
-
-```
-].pull-right[
-
-```{r bb-pic2,  results='asis', echo = F, include = T, cache = T, eval = TRUE}
-
-
-i1 <- img_modal(src = "images/bb_2.png", alt = "Points used to Develop Bounding Box 2", other=list(width="55%"))
-
-c(str_split(i1, "\\n", simplify = T)[1:2],
-  str_split(i1, "\\n", simplify = T)[3:9]
+  str_split(i2, "\\n", simplify = T)[1:2],
+  str_split(i3, "\\n", simplify = T)[1:2],
+  str_split(i1, "\\n", simplify = T)[3:9],
+  str_split(i2, "\\n", simplify = T)[3:9],
+  str_split(i3, "\\n", simplify = T)[3:9]
   ) %>% paste(collapse = "\n") %>% cat()
 ```
-
-]
 ]
 
 ???
 
 After visually exploring the data during exploratory data analysis, we wanted to derive numerical features based on the visualizations. This was done by creating essentially a bounding box around each trajectory, which represents its movement over time. We can then calculate different features from this bounding box. First, we can find the distance between the maximum and minimum coordinates (total displacement). Second, this value may not always represent the first and last day of the time frame, so we also found the different between the latest and earliest observation (displacement in time). Finally, using the displacement in time, we found the angle that the trajectory moved over the time frame.
 
-
----
-class:primary
-# Deriving Numerical Features: Wiggle
-
-.center[
-```{r wiggle,  results='asis', echo = F, include = T, cache = T, eval = TRUE}
-
-
-i1 <- img_modal(src = "images/wiggle.png", alt = "Wiggle Calculation", other=list(width="50%"))
-
-c(str_split(i1, "\\n", simplify = T)[1:2],
-  str_split(i1, "\\n", simplify = T)[3:9]
-  ) %>% paste(collapse = "\n") %>% cat()
-
-```
-]
-
-+ To determine the amount of “wiggle”, we estimated the total length of the trajectory (arc length).
-  - Find the distance between each set of two connected
-points (yellow lines).
-  - Add all the calculated distances to estimate the total length of the trajectory.
-  - Trajectories with a higher total length are "wigglier"
-
-???
-
-Next, besides the bounding box, we wanted to derive a numerical assessment of "wiggle", as this is something that can be seen but may be hard to quantify. How I began to think through this was by imaging we pulled a trajectory so that it was straight. Trajectories with more wiggle would be longer that those with less wiggle. Since each trajectory consists of observed points connected by line segments, I found the length of each line segment and atted them all together (estimate of act length). So the trajectories with a higher total length are wigglier.
-
----
-class:primary
-
-#Clustering with K-Means
-
-+ Bounding Box features were used as input into K-Means clustering, which partitions n observations into k clusters.
-+ K-Means Clustering `r Citep(bib[[c("steinley_kmeans_2006")]])`
-  - All observations must belong to a cluster and each cluster, k, must have at least one observation
-  - Iterative Procedure 
-  - Minimize squared Euclidean distance between an observation and the centroid vector of a cluster
-  - Centroid vector found by averaging the features of each cluster member
-
+Next, besides the bounding box, we wanted to derive a numerical assessment of "wiggle", as this is something that can be seen but may be hard to quantify. How I began to think through this was by imaging we pulled a trajectory so that it was straight. Trajectories with more wiggle would be longer that those with less wiggle. Since each trajectory consists of observed points connected by line segments, I found the length of each line segment and added them all together (estimate of act length). So the trajectories with a higher total length are wigglier.
 
 ---
 class:primary
@@ -404,6 +365,198 @@ c(str_split(i1, "\\n", simplify = T)[1:2],
 
 Finally, not all characteristics of a trajectory are simultaneously relevant when analyzing trajectories, so we wanted to employ feature selection to assess relevancy. Since we could see the movement occurring in contiguous patches, we applied a clustering algorithm to find this groups of similar movements. So we have no label information (don't know true trajectories), we used  visualization to make judgements. So assigned each cluster a color, and output a single point of each trajectory with the assigned color onto a map. We classified redundant features as adding a feature to the clustering does not change the assigned cluster. Further, we wanted our features to help create continguous clusters. Did not text all possible subsets of features, just some I thought was relevant.  (Explain process). Plot 4 is the features selected.
 
+---
+class:primary
+
+#Clustering Using All Data - Comparison
+
++  Can compare our results with deformation data found using a kinematic crack algorithm calculated using the RGPS data `r Citep(bib[[c("peterson_evaluating_2011")]])`
+  - Note that this image does not represent the true ice cracks, just the cracks determined by this method.
+
+.center[
+```{r all-comp-pic,  results='asis', echo = F, include = T, cache = T, eval = TRUE}
+
+
+i1 <- img_modal(src = "images/all-weeks-comp.png", alt = "Comparison of Our Results to a Kinematic Crack Algorithm", other=list(width="80%"))
+
+c(str_split(i1, "\\n", simplify = T)[1:2],
+  str_split(i1, "\\n", simplify = T)[3:9]
+  ) %>% paste(collapse = "\n") %>% cat()
+
+```
+]
+
+
+---
+class:primary
+#Interpolate Missing Points
+
+Want to reconstruct the underlying process of ocean movement (assumed Gaussian), where we simultaneously obtain the movement in $x$ (called $u$) and the movement in $y$ (called $v$) at time $t$.
++ The movements are added to the previous location to estimate the missing location
+$$(\hat{u}_{t}, \hat{v}_{t}) + (x_{t-1}, y_{t-1}) = (\hat{x}_t, \hat{y}_t)$$
+
+
+We elected to use the Integrated Nested Laplace Approximation (INLA) approach:
+  + Computational benefits over other methods, as it focuses on models that can be expressed as latent Gaussian Markov Random Fields (GMRF)
+  + Easily accounts for the spatio-temporal structure of the data during the inferential process `r Citep(bib[[c("spde-book")]])`
+
+
+???
+
+We wanted to develop a model that reconstructs the assumed Gaussian underlying process, where we can jointly obtain the movement in x (called u) and the movement in y (called v) at time t. We can then add these movements to the previous location to estimate the missing location (explain the equation). We elected to use the integrated nested laplace approximation or INLA to create our models due to their compuational benefits over other methods since it focuses on models that can be expressed as latent gaussian markov random fields (see where later). Additionally, they provide flexibility to easily account for the spatio-temporal data during the underlying process. 
+
+---
+class:primary
+
+#INLA: Continuously Indexed GF
+
+Let's first begin by introducing a univariate process: $$\left\{H(s,t): s \in \mathcal{D} \subset \mathcal{R}^2, t \in \mathcal{R}\right\}$$ where there are $N$ spatial locations at $t$ time points.
+
+The process is assumed Gaussian, where the model can be rewritten as 
+$$H_{{i,t}} \sim N(\eta_{s,t}, \sigma^2_e)$$ 
+with $\sigma^2_e$ representing the nugget effect and the linear predictor is defined as 
+
+$$\eta_{i,t} = \alpha + Z(s,t)$$ 
+with $\alpha$ denoting the intercept and the realization of the latent ST Gaussian Field (GF) is represented by $Z \sim GF(0,\Sigma)$ `r Citep(bib[[c("BLANGIARDO201333")]])`. 
+
+???
+
+To begin setting up our model, we can define out bivariate data by the joint process H, where we have n spatial locations at t time points. We assume the process is Gaussian so we can rewrite the model as $H_{{i,t}} \sim BivN(\eta_{i,t}, \sigma^2_e)$, where the sigma squared e represents the nugget effect (or measurement error) and our linear predictor eta is expressed as alpha, the intercept plus the realization of the latent spatio-temporal Gaussian field, w. The realization has a separable matern spatio temporal covariance function. 
+
+---
+class:primary
+
+#INLA: SPDE
+
+When working with point data, assuming a continuously indexed GF for $Z(s,t)$ is not a computationally efficient approach.
+
+Instead used stochastic partial differential equations (SPDE)- represent a GF with Matern Covariance Function through a discretely indexed process called a GMRF `r Citep(bib[[c("spde-book")]])`
+.pull-left[
+
+.center[
+```{r spde,  results='asis', echo = F, include = T, cache = T, eval = TRUE}
+
+
+i1 <- img_modal(src = "images/mesh-ex.png", alt = "Example of the triangulation of a field used in our simulation study", other=list(width="90%"))
+
+c(str_split(i1, "\\n", simplify = T)[1:2],
+  str_split(i1, "\\n", simplify = T)[3:9]
+  ) %>% paste(collapse = "\n") %>% cat()
+
+```
+]].pull-right[
+  
+The linear predictor can then be rewritten as 
+$$\eta_{i,t} = \alpha + \sum^{G}_{g=1}\tilde{A}_{ig}\tilde{Z_t}$$ 
+where $\tilde{A}_{ig}$ is a sparse precision matrix mapping the GMRF, $\tilde{Z_t}$, to the $G$ nodes in the triangulation
+]
+
+???
+
+When working with point data like our trajectories, assuming a continuously indexed gaussian field for w is not a computationally efficient approach. So instead we used stochastic partial differential equations. These represent a gaussian field with a matern covariance function through a discretely indexed process called a gaussian markov random field. To create the discrete index, a constrained delaunay triangulation. This triangluation prevents highly obtuse triangles, and we create triangles outside the boundary to prevent the variance being significantly higher at the boundary points (boundary effect). In this figure, an example of simulated data is given. On the right hand side is the data, which a blue line around the points to show the boundary. The left hand side shows the triangulation of this space, with the same blue line, where we see more triangles on the inside than outside. The density of the triangles also affects computation time.
+
+Since we are using the stochastic partial differential equations, the linear predictors is rewritten, where we still have our intercept, but the A tilde is a sparse precision matrix that maps the GMRF, w, from the N locations in the data set to the G nodes in the triangulation. 
+
+---
+class:primary
+#Final Model: Bivariate Process
+
+We can represent $u$ and $v$ by the joint process $$\left\{B(s,t): s \in \mathcal{D} \subset \mathcal{R}^2, t \in \mathcal{R}\right\}$$
+
+The process is assumed Gaussian, where the model can be rewritten as 
+$$B_{{i,t}} \sim BiN(\eta_{i,t}, \sigma^2_e)$$ 
+
+The linear predictor is written as
+$$\eta_{it} = \alpha_u + \alpha_{v} + t + z_{u}(s) + z_{v}(s) + z_{uv}(s)$$
+
+where $\alpha_u$ and $\alpha_{v}$ are the intercepts for each response and the $z$ functions represent the SPDE model for the $u$ and $v$ effects, along with their interaction.
+
+---
+class:primary
+#Using Model
+
+We developed a model within spatial-temporal neighbors to account for the non-stationary of our data
+
++ Due to observing most of the ice sheet every three days, our response in the model was the movement over three days, meaning 
+$$(\hat{u}_{t}, \hat{v}_{t}) + (x_{t-3}, y_{t-3}) = (\hat{x}_t, \hat{y}_t)$$
++ Of the observed data within a group of spatial-temporal neighbors with a known location after three days, we randomly removed 10%
+
+???
+
+So for our final model to jointly measure u and v of the underlying process, we write the linear predictor as $\eta_{it} = \alpha_u + \alpha_{v} + z_{u}(s,t) + z_{v}(s,t) + z_{uv}(s,t)$, where we have our intercepts for each variable and the z functions represent the SPDE model for u and v spatio-temporal effects, along with their interaction. We developed a model within each intersection to account for the non-stationarity aspect of our data, using only data at time t, t-1, t+1. Only used three days as already computationally inefficient, and don't expect days further out to have much of an impact. 
+
+Once we develop the model, we created a spatial grid that encompassed the sea ice to obtain values to use in our model (centroid of the grid cell). The underlying process should be smooth within an intersection, so the centroid should be close enough that it has a similar value of the underlying process. Once we create the grid for initial location estimates of the missing data, we used the developed bivariate model to find the predicted locations using the posterior mean of the linear predictor. The estimates are added to the previous day's known location to obtain the esimate of the missing location.
+
+Now I'm going to walk through some of the results for our model using the sea ice trajectories. For testing, we created a model for each intersection and time combination. So if we had p intersections, which vary by week, and t time points, then t x p models are developed. Due to observing most of the ice sheet every three days, our response in the model was the movement over three days. Of the observed data in an intersection with a known location after three days, we randomly removed 10%. Then using the observed data, we fit the spatial model with a time fixed effect as it is computationally more efficient than the spatio-temporal model. Also, since we are only using three days to develop our model, there is probably not a significant amount of temporal dependence, as shown in the simulation study, where the spatial model sometimes performs better than the spatio-temporal model (for y). This model was used to estimate the underlying process that drives movement over three days.
+
+
+
+---
+class:primary
+#Example Results - Week 1
+
+.pull-left[
+
+**RMSE for Interpolation Methods by cluster for Week 1**
+```{r ice-results-tab2, message=FALSE, warning = FALSE}
+
+result_data5 <- data.frame(Cluster = c(1,2,3,4,5,6), X1 = c(4.410,0.443,1.120,1.140,0.549, 1.320), Y1 = c(15.500, 0.870, 1.480, 1.980, 1.980, 2.970), X2 = c(1.330, 0.303, 1.770, 2.920, 0.969,2.330), Y2 = c(21.800, 0.527, 4.740, 3.420, 5.507, 7.450))
+
+kableExtra::kable(result_data5, booktabs = TRUE, col.names = c( "Cluster", "X", "Y", "X", "Y"), escape = FALSE, align = "c", table.attr = "style='width:80%;'") %>% add_header_above(c(" ", "Joint Spatial" = 2, "Linear" = 2)) 
+
+```
+].pull-right[
+
+**Coverage** 
+
+A benefit of using a model-based approach is that we can determine the uncertainty of our estimate.
+  - Use standard deviation of estimate computed using the posterior marginals, to compute intervals of our estimates. The intervals were used to find the proportion of intervals containing the true amount of movement
+
+<br>
+
+```{r ice-results-tab3, message=FALSE, warning = FALSE}
+
+result_data6 <- data.frame(Week = c(1), X1 = c(0.389), Y1 = c(0.37))
+
+kableExtra::kable(result_data6, booktabs = TRUE, col.names = c( "Week", "X", "Y"), escape = FALSE, align = "c", table.attr = "style='width:75%;'")
+```
+
+]
+
+
+???
+
+For time, I am just showing the RMSE results for Week 1. Once again, we are comparing it with linear interpolation. Overall our model seems to be performing better than linter interpolation. However, since each cluster is made of different movements we also Look at the RMSEs for each cluster, for x, in week 1, our model performs better than linear interpolation for cluster 3 through 6. The results for the y coordinate are similar, except in week 1, our model also performs better in cluster 1
+
+A benefit of using a model-based approach is that we can determine the uncertainty of our estimate. Using the posterior marginals, we can find the standard deviation of the estimate, which can then be used to create an interval of our estimates. The intervals can then be used to find the proportion of intervals containing the true amount of movement during testing of our models, otherwise known as coverage. Our coverage is pretty low, which is some cause for concern. So there is maybe better priors to use in our inla model, or a better creation of the triangulation, etc. 
+
+
+
+---
+class:primary
+
+# Discussion of Model
+
+
+**Advantages**:
+
++ Takes into account the nonstationarity of the data
++ Showed some improvement, in terms of RMSE, over linear interpolation for curved data that is not highly sampled
++ Able to calculate uncertainty
+  
+**Areas for Improvement**:
+
++ Computational efficiency
++ Coverage shows that there is room for improvement with the prior specification
++ Combine into a one-step process
+
+???
+
+Our model is beneficial as it takes into account the non-stationarity of the data, which is an important component of this specific underlying process. And it Showed some improvement, in terms of RMSE, over linear interpolation for curved data that is not highly sampled. Also, it is able to estimate days on the edges, which linear interpolation is not able to do since it requires two observed locations to estimate in between. Finally we can calculate an uncertainty estimate of our predictions. 
+
+Areas of improvement for our approach include computational efficiency. Due to develop t x p (number of intersections) models, it takes a long time to run (~20-45 minutes). Next, coverage showed there is room for improved with prior specification. Currently assuming the same prior for each model (more efficient), but probably not accurate.
+
+  
 
 ---
 class:primary
@@ -416,15 +569,3 @@ print(bib[[c("ansari_spatiotemporal_2020", "yuan_review_2017")]],
 ```
 </font>
 
----
-class:inverse
-<br>
-<br>
-<br>
-.center[
-# Questions?
-<br>
-<br>
-`r fa("envelope", fill = "white")` **alisonkleffner@creighton.edu**
-`r fa("github", fill = "white")` **alisonkleffner**
-]

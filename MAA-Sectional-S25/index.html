@@ -8,6 +8,8 @@
     <link href="libs/remark-css/default.css" rel="stylesheet" />
     <link href="libs/remark-css/metropolis-fonts.css" rel="stylesheet" />
     <link href="libs/remark-css/metropolis.css" rel="stylesheet" />
+    <script src="libs/kePrint/kePrint.js"></script>
+    <link href="libs/lightable/lightable.css" rel="stylesheet" />
     <link rel="stylesheet" href="css/modal.css" type="text/css" />
     <link rel="stylesheet" href="css/sizeformat.css" type="text/css" />
   </head>
@@ -212,41 +214,46 @@ body {
 
 
 &lt;br&gt;&lt;br&gt;&lt;br&gt;
-## Visualization of Correlation within Spatial Experimental Plots
+## Visualization and Modeling of Sea Ice Trajectories
 #### Alison Kleffner
 #### Department of Mathematics, Creighton University
 ##### <svg aria-hidden="true" role="img" viewBox="0 0 512 512" style="height:1em;width:1em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:black;overflow:visible;position:relative;"><path d="M64 112c-8.8 0-16 7.2-16 16v22.1L220.5 291.7c20.7 17 50.4 17 71.1 0L464 150.1V128c0-8.8-7.2-16-16-16H64zM48 212.2V384c0 8.8 7.2 16 16 16H448c8.8 0 16-7.2 16-16V212.2L322 328.8c-38.4 31.5-93.7 31.5-132 0L48 212.2zM0 128C0 92.7 28.7 64 64 64H448c35.3 0 64 28.7 64 64V384c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128z"/></svg> [alisonkleffner@creighton.edu](email.address@creighton.edu)
 ##### <svg aria-hidden="true" role="img" viewBox="0 0 576 512" style="height:1em;width:1.12em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:black;overflow:visible;position:relative;"><path d="M575.8 255.5c0 18-15 32.1-32 32.1h-32l.7 160.2c0 2.7-.2 5.4-.5 8.1V472c0 22.1-17.9 40-40 40H456c-1.1 0-2.2 0-3.3-.1c-1.4 .1-2.8 .1-4.2 .1H416 392c-22.1 0-40-17.9-40-40V448 384c0-17.7-14.3-32-32-32H256c-17.7 0-32 14.3-32 32v64 24c0 22.1-17.9 40-40 40H160 128.1c-1.5 0-3-.1-4.5-.2c-1.2 .1-2.4 .2-3.6 .2H104c-22.1 0-40-17.9-40-40V360c0-.9 0-1.9 .1-2.8V287.6H32c-18 0-32-14-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231.5c8 7 12 15 11 24z"/></svg> [https://alison-kleffner.netlify.app/](https://alison-kleffner.netlify.app/)
 ##### <svg aria-hidden="true" role="img" viewBox="0 0 496 512" style="height:1em;width:0.97em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:black;overflow:visible;position:relative;"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg> [alisonkleffner](https://github.com/alisonkleffner)
 &lt;br&gt;&lt;br&gt;
-.medium[*Slides: https://alisonkleffner.github.io/presentations-creighton/graphics-group/S24/index.html#1*]
+.medium[*Slides: https://alisonkleffner.github.io/presentations-creighton/MAA-Sectional-S25/index.html#1*]
 
 ---
 class:primary
-# Outline
+# General Motivation
+
+The rapid development of technology, like global position systems (GPS) and geographic information systems (GIS), has led to a dramatic increase in the amount of spatial and spatio-temporal data collected (Ansari, Ahmad, Khan, Bhushan, and others, 2020) 
+
++ This growth has necessitated the development of new techniques to work with this data (Yuan, Sun, Zhao, Li, and Wang, 2017)
 
 ---
 class:primary
-# Motivation
+# Motivation: Trajectories
 
-The rapid development of technology, like global position systems (GPS) and geographic information systems (GIS), has led to a dramatic increase in the amount of spatial and spatio-temporal data collected (Ansari, Ahmad, Khan et al., 2020) 
+**Interest**: Discover patterns within the trajectories to help understand their behavior and use these behaviors to reconstruct an underlying process.
 
-+ This growth has necessitated the development of new techniques to work with this data (Yuan, Sun, Zhao et al., 2017)
-+ We focus on environmental applications with multivariate spatial data and trajectory data.
+  + Visualize trajectories to provide insight into the underlying dynamics driving movement.
+  + Trajectories are complex, so we can extract features from the raw data (Harold, Lorenzoni, Shipley, and Coventry, 2016) - Motivated by the visualization
+  + Use the features and insights to inform modeling
+  
+.center[
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imgtrajexample' src='images/traj-example.png' alt='Example of a Trajectory' width='40%'&gt;
+&lt;!-- The Modal --&gt;
+&lt;div id='modaltrajexample' class='modal'&gt;
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodaltrajexample'&gt;
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captiontrajexample' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+]
 
----
-class:primary
-# Motivation
 
-**Interest**: Discover patterns within the trajectories to help understand their behavior (Andrienko, Andrienko, and Wrobel, 2007) 
-
-**A Method**: Visualization during Exploratory Data Analysis (EDA):  
-  + Trajectories are difficult to visualize (messy)
-  + Provide insight into the underlying dynamics driving movement.
-
-**Extract Features**: Since trajectories are complex, so we can extract features from the raw data (Harold, Lorenzoni, Shipley et al., 2016) 
-  + Can use visualization to motivate feature creation
-  + Want to create features that provide a quantitative summary of the movement seen in plots 
 
 **Case Study**: Arctic Sea Ice Crack Detection
 
@@ -261,10 +268,13 @@ class:primary
 
 + Sea ice serves as a barrier between the atmosphere and the ocean
 + Cracks, or leads, may form in the ice pack due to dynamic processes
-  - Allows for heat from the ocean to be transferred to the atmosphere (Schreyer, Sulsky, Munday et al., 2006). 
+  - Allows for heat from the ocean to be transferred to the atmosphere (Schreyer, Sulsky, Munday, Coon, and Kwok, 2006). 
   - Accounts for half of the heat flux between the ocean and atmosphere (Badgley, 1961)
-+ Previous ice crack detection methods can generally be split into two categories: thermal and deformation. 
-  
+
+**Project Goals**:
+
+- Develop a lead detection method by clustering similar trajectories
+- Develop a model reconstructing the underlying process for interpolation
 
 .center[
 &lt;!-- Trigger the Modal --&gt;
@@ -287,6 +297,8 @@ class:primary
 .center[
 &lt;!-- Trigger the Modal --&gt;
 &lt;img id='imgrgps_grid' src='images/rgps_grid.jpg' alt='Example of initial grid used to track movement (Peterson &amp; Sulsky, 2011)' width='25%'&gt;
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imgdata_example' src='images/data_example.png' alt='Missing Data Oh My!' width='30%'&gt;
 &lt;!-- The Modal --&gt;
 &lt;div id='modalrgps_grid' class='modal'&gt;
   &lt;!-- Modal Content (The Image) --&gt;
@@ -294,7 +306,16 @@ class:primary
   &lt;!-- Modal Caption (Image Text) --&gt;
   &lt;div id='captionrgps_grid' class='modal-caption'&gt;&lt;/div&gt;
 &lt;/div&gt;
+&lt;!-- The Modal --&gt;
+&lt;div id='modaldata_example' class='modal'&gt;
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodaldata_example'&gt;
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captiondata_example' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
 ]
+
+
 
 + Arctic Sea Ice is tracked by NASA's RADARSTAT Geophysical Processor System (RGPS), which uses synthetic aperture radar (SAR) images
 + Each grid cell vertex is assigned an identifier `\((j=1,...,n)\)` which is used for tracking
@@ -321,7 +342,7 @@ class:primary
 
 .pull-left[
 Principle of Similarity: group items that look similar .
-  + Trajectories with similar shapes and orientations (Chalbi, Ritchie, Park et al., 2020)
+  + Trajectories with similar shapes and orientations (Chalbi, Ritchie, Park, Choi, Roussel, Elmqvist, and Chevalier, 2020)
 .center[  
 &lt;!-- Trigger the Modal --&gt;
 &lt;img id='imglawsim' src='images/law-sim.png' alt='Example of gestalt law of similarity' width='40%'&gt;
@@ -361,8 +382,7 @@ class:primary
 
 + Line segments, with the direction of each trajectory denoted by an arrow at the end (Andrienko, Andrienko, and Gatalsky, 2000) 
   - Shows the displacement and direction over time.
-+ This plot violates several guidelines for effective visualization, making it
-unsuitable for presentation.
++ This plot violates several guidelines for effective visualization
   - However, the principle of similarity helps a viewer easily group trajectories that look to move with a similar form in the same direction over time
 
 .center[
@@ -385,7 +405,7 @@ First, we created a static plot of all of our trajectories, which connected each
 class:primary
 # Animated Trajectory Plot
 
-[Link](https://alisonkleffner.github.io/yield-map-redesign/interactive-new.html)
+[Link](https://alisonkleffner.github.io/presentations-creighton/MAA-Sectional-S25/traj.html)
 
 + Shows the incremental progress of each trajectory over time
   - Plot the new location at each time step and connect the new observation with the previous through a line segment. 
@@ -401,34 +421,22 @@ Another drawback of the static trajectory plot is the inability to associated di
 
 ---
 class:primary
-
 # Deriving Numerical Features: Bounding Box
 
-+ We create a bounding box around for each trajectory to represent it's movement
 + Bounding Box Features:
+
   - Length travel in x/y between the minimum and maximum location 
-.center[
-( `\(x_{max} - x_{min}\)` and `\(y_{max} - y_{min}\)`)]
   - Length travel in x/y between latest and earliest observation 
-  .center[
-  ( `\(x_{2} - x_{1}\)` and `\(y_{2} - y_{1}\)`)]
   - Angle of movement (direction)
+  - Amount of “wiggle”: arc length
 
 .center[
-.pull-left[
 &lt;!-- Trigger the Modal --&gt;
-&lt;img id='imgbb_1' src='images/bb_1.png' alt='Points used to Develop Bounding Box 1' width='75%'&gt;
-&lt;!-- The Modal --&gt;
-&lt;div id='modalbb_1' class='modal'&gt;
-  &lt;!-- Modal Content (The Image) --&gt;
-  &lt;img class='modal-content' id='imgmodalbb_1'&gt;
-  &lt;!-- Modal Caption (Image Text) --&gt;
-  &lt;div id='captionbb_1' class='modal-caption'&gt;&lt;/div&gt;
-&lt;/div&gt;
-].pull-right[
-
+&lt;img id='imgbb_2' src='images/bb_2.png' alt='Length travel in x/y between the minimum and maximum location' width='30%'&gt;
 &lt;!-- Trigger the Modal --&gt;
-&lt;img id='imgbb_2' src='images/bb_2.png' alt='Points used to Develop Bounding Box 2' width='55%'&gt;
+&lt;img id='imgbb_1' src='images/bb_1.png' alt='(a) Length travel in x/y between latest and earliest observation and (b) Direction' width='30%'&gt;
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imgwiggle' src='images/wiggle.png' alt='Wiggle Calculation' width='30%'&gt;
 &lt;!-- The Modal --&gt;
 &lt;div id='modalbb_2' class='modal'&gt;
   &lt;!-- Modal Content (The Image) --&gt;
@@ -436,22 +444,13 @@ class:primary
   &lt;!-- Modal Caption (Image Text) --&gt;
   &lt;div id='captionbb_2' class='modal-caption'&gt;&lt;/div&gt;
 &lt;/div&gt;
-
-]
-]
-
-???
-
-After visually exploring the data during exploratory data analysis, we wanted to derive numerical features based on the visualizations. This was done by creating essentially a bounding box around each trajectory, which represents its movement over time. We can then calculate different features from this bounding box. First, we can find the distance between the maximum and minimum coordinates (total displacement). Second, this value may not always represent the first and last day of the time frame, so we also found the different between the latest and earliest observation (displacement in time). Finally, using the displacement in time, we found the angle that the trajectory moved over the time frame.
-
-
----
-class:primary
-# Deriving Numerical Features: Wiggle
-
-.center[
-&lt;!-- Trigger the Modal --&gt;
-&lt;img id='imgwiggle' src='images/wiggle.png' alt='Wiggle Calculation' width='50%'&gt;
+&lt;!-- The Modal --&gt;
+&lt;div id='modalbb_1' class='modal'&gt;
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodalbb_1'&gt;
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captionbb_1' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
 &lt;!-- The Modal --&gt;
 &lt;div id='modalwiggle' class='modal'&gt;
   &lt;!-- Modal Content (The Image) --&gt;
@@ -461,37 +460,20 @@ class:primary
 &lt;/div&gt;
 ]
 
-+ To determine the amount of “wiggle”, we estimated the total length of the trajectory (arc length).
-  - Find the distance between each set of two connected
-points (yellow lines).
-  - Add all the calculated distances to estimate the total length of the trajectory.
-  - Trajectories with a higher total length are "wigglier"
-
 ???
 
-Next, besides the bounding box, we wanted to derive a numerical assessment of "wiggle", as this is something that can be seen but may be hard to quantify. How I began to think through this was by imaging we pulled a trajectory so that it was straight. Trajectories with more wiggle would be longer that those with less wiggle. Since each trajectory consists of observed points connected by line segments, I found the length of each line segment and atted them all together (estimate of act length). So the trajectories with a higher total length are wigglier.
+After visually exploring the data during exploratory data analysis, we wanted to derive numerical features based on the visualizations. This was done by creating essentially a bounding box around each trajectory, which represents its movement over time. We can then calculate different features from this bounding box. First, we can find the distance between the maximum and minimum coordinates (total displacement). Second, this value may not always represent the first and last day of the time frame, so we also found the different between the latest and earliest observation (displacement in time). Finally, using the displacement in time, we found the angle that the trajectory moved over the time frame.
 
----
-class:primary
-
-#Clustering with K-Means
-
-+ Bounding Box features were used as input into K-Means clustering, which partitions n observations into k clusters.
-+ K-Means Clustering (Steinley, 2006)
-  - All observations must belong to a cluster and each cluster, k, must have at least one observation
-  - Iterative Procedure 
-  - Minimize squared Euclidean distance between an observation and the centroid vector of a cluster
-  - Centroid vector found by averaging the features of each cluster member
-
+Next, besides the bounding box, we wanted to derive a numerical assessment of "wiggle", as this is something that can be seen but may be hard to quantify. How I began to think through this was by imaging we pulled a trajectory so that it was straight. Trajectories with more wiggle would be longer that those with less wiggle. Since each trajectory consists of observed points connected by line segments, I found the length of each line segment and added them all together (estimate of act length). So the trajectories with a higher total length are wigglier.
 
 ---
 class:primary
 # Feature Selection
 
-+ Not all characteristics of a trajectory are simultaneously relevant (Rinzivillo, Pedreschi, Nanni et al., 2008)
++ Not all characteristics of a trajectory are simultaneously relevant (Rinzivillo, Pedreschi, Nanni, and Giannotti, 2008)
 + Clustering algorithm to assign trajectories to groups of similar
 movements 
-+ No label information to help evaluate feature importance, used visualization to make judgements (Li, Cheng, Wang et al., 2017).
++ No label information to help evaluate feature importance, used visualization to make judgements (Li, Cheng, Wang, Morstatter, Trevino, Tang, and Liu, 2017).
   - Redundant:  adding it to the clustering algorithm, while
 holding the other variables constant, does not change the assigned clusters.
   - Relevance: help with cluster continuity
@@ -512,6 +494,247 @@ holding the other variables constant, does not change the assigned clusters.
 
 Finally, not all characteristics of a trajectory are simultaneously relevant when analyzing trajectories, so we wanted to employ feature selection to assess relevancy. Since we could see the movement occurring in contiguous patches, we applied a clustering algorithm to find this groups of similar movements. So we have no label information (don't know true trajectories), we used  visualization to make judgements. So assigned each cluster a color, and output a single point of each trajectory with the assigned color onto a map. We classified redundant features as adding a feature to the clustering does not change the assigned cluster. Further, we wanted our features to help create continguous clusters. Did not text all possible subsets of features, just some I thought was relevant.  (Explain process). Plot 4 is the features selected.
 
+---
+class:primary
+
+#Clustering Using All Data - Comparison
+
++  Can compare our results with deformation data found using a kinematic crack algorithm calculated using the RGPS data (Peterson and Sulsky, 2011)
+  - Note that this image does not represent the true ice cracks, just the cracks determined by this method.
+
+.center[
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imgallweekscomp' src='images/all-weeks-comp.png' alt='Comparison of Our Results to a Kinematic Crack Algorithm' width='80%'&gt;
+&lt;!-- The Modal --&gt;
+&lt;div id='modalallweekscomp' class='modal'&gt;
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodalallweekscomp'&gt;
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captionallweekscomp' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+]
+
+
+---
+class:primary
+#Interpolate Missing Points
+
+Want to reconstruct the underlying process of ocean movement (assumed Gaussian), where we simultaneously obtain the movement in `\(x\)` (called `\(u\)`) and the movement in `\(y\)` (called `\(v\)`) at time `\(t\)`.
++ The movements are added to the previous location to estimate the missing location
+`$$(\hat{u}_{t}, \hat{v}_{t}) + (x_{t-1}, y_{t-1}) = (\hat{x}_t, \hat{y}_t)$$`
+
+
+We elected to use the Integrated Nested Laplace Approximation (INLA) approach:
+  + Computational benefits over other methods, as it focuses on models that can be expressed as latent Gaussian Markov Random Fields (GMRF)
+  + Easily accounts for the spatio-temporal structure of the data during the inferential process (Krainski, Gomez-Rubio, Bakka, Lenzi, Castro-Camilo, Simpson, Lindgren, and Rue, 2019)
+
+
+???
+
+We wanted to develop a model that reconstructs the assumed Gaussian underlying process, where we can jointly obtain the movement in x (called u) and the movement in y (called v) at time t. We can then add these movements to the previous location to estimate the missing location (explain the equation). We elected to use the integrated nested laplace approximation or INLA to create our models due to their compuational benefits over other methods since it focuses on models that can be expressed as latent gaussian markov random fields (see where later). Additionally, they provide flexibility to easily account for the spatio-temporal data during the underlying process. 
+
+---
+class:primary
+
+#INLA: Continuously Indexed GF
+
+Let's first begin by introducing a univariate process: `$$\left\{H(s,t): s \in \mathcal{D} \subset \mathcal{R}^2, t \in \mathcal{R}\right\}$$` where there are `\(N\)` spatial locations at `\(t\)` time points.
+
+The process is assumed Gaussian, where the model can be rewritten as 
+`$$H_{{i,t}} \sim N(\eta_{s,t}, \sigma^2_e)$$` 
+with `\(\sigma^2_e\)` representing the nugget effect and the linear predictor is defined as 
+
+`$$\eta_{i,t} = \alpha + Z(s,t)$$` 
+with `\(\alpha\)` denoting the intercept and the realization of the latent ST Gaussian Field (GF) is represented by `\(Z \sim GF(0,\Sigma)\)` (Blangiardo, Cameletti, Baio, and Rue, 2013). 
+
+???
+
+To begin setting up our model, we can define out bivariate data by the joint process H, where we have n spatial locations at t time points. We assume the process is Gaussian so we can rewrite the model as `\(H_{{i,t}} \sim BivN(\eta_{i,t}, \sigma^2_e)\)`, where the sigma squared e represents the nugget effect (or measurement error) and our linear predictor eta is expressed as alpha, the intercept plus the realization of the latent spatio-temporal Gaussian field, w. The realization has a separable matern spatio temporal covariance function. 
+
+---
+class:primary
+
+#INLA: SPDE
+
+When working with point data, assuming a continuously indexed GF for `\(Z(s,t)\)` is not a computationally efficient approach.
+
+Instead used stochastic partial differential equations (SPDE)- represent a GF with Matern Covariance Function through a discretely indexed process called a GMRF (Krainski, Gomez-Rubio, Bakka et al., 2019)
+.pull-left[
+
+.center[
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imgmeshex' src='images/mesh-ex.png' alt='Example of the triangulation of a field used in our simulation study' width='90%'&gt;
+&lt;!-- The Modal --&gt;
+&lt;div id='modalmeshex' class='modal'&gt;
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodalmeshex'&gt;
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captionmeshex' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+]].pull-right[
+  
+The linear predictor can then be rewritten as 
+`$$\eta_{i,t} = \alpha + \sum^{G}_{g=1}\tilde{A}_{ig}\tilde{Z_t}$$` 
+where `\(\tilde{A}_{ig}\)` is a sparse precision matrix mapping the GMRF, `\(\tilde{Z_t}\)`, to the `\(G\)` nodes in the triangulation
+]
+
+???
+
+When working with point data like our trajectories, assuming a continuously indexed gaussian field for w is not a computationally efficient approach. So instead we used stochastic partial differential equations. These represent a gaussian field with a matern covariance function through a discretely indexed process called a gaussian markov random field. To create the discrete index, a constrained delaunay triangulation. This triangluation prevents highly obtuse triangles, and we create triangles outside the boundary to prevent the variance being significantly higher at the boundary points (boundary effect). In this figure, an example of simulated data is given. On the right hand side is the data, which a blue line around the points to show the boundary. The left hand side shows the triangulation of this space, with the same blue line, where we see more triangles on the inside than outside. The density of the triangles also affects computation time.
+
+Since we are using the stochastic partial differential equations, the linear predictors is rewritten, where we still have our intercept, but the A tilde is a sparse precision matrix that maps the GMRF, w, from the N locations in the data set to the G nodes in the triangulation. 
+
+---
+class:primary
+#Final Model: Bivariate Process
+
+We can represent `\(u\)` and `\(v\)` by the joint process `$$\left\{B(s,t): s \in \mathcal{D} \subset \mathcal{R}^2, t \in \mathcal{R}\right\}$$`
+
+The process is assumed Gaussian, where the model can be rewritten as 
+`$$B_{{i,t}} \sim BiN(\eta_{i,t}, \sigma^2_e)$$` 
+
+The linear predictor is written as
+`$$\eta_{it} = \alpha_u + \alpha_{v} + t + z_{u}(s) + z_{v}(s) + z_{uv}(s)$$`
+
+where `\(\alpha_u\)` and `\(\alpha_{v}\)` are the intercepts for each response and the `\(z\)` functions represent the SPDE model for the `\(u\)` and `\(v\)` effects, along with their interaction.
+
+---
+class:primary
+#Using Model
+
+We developed a model within spatial-temporal neighbors to account for the non-stationary of our data
+
++ Due to observing most of the ice sheet every three days, our response in the model was the movement over three days, meaning 
+`$$(\hat{u}_{t}, \hat{v}_{t}) + (x_{t-3}, y_{t-3}) = (\hat{x}_t, \hat{y}_t)$$`
++ Of the observed data within a group of spatial-temporal neighbors with a known location after three days, we randomly removed 10%
+
+???
+
+So for our final model to jointly measure u and v of the underlying process, we write the linear predictor as `\(\eta_{it} = \alpha_u + \alpha_{v} + z_{u}(s,t) + z_{v}(s,t) + z_{uv}(s,t)\)`, where we have our intercepts for each variable and the z functions represent the SPDE model for u and v spatio-temporal effects, along with their interaction. We developed a model within each intersection to account for the non-stationarity aspect of our data, using only data at time t, t-1, t+1. Only used three days as already computationally inefficient, and don't expect days further out to have much of an impact. 
+
+Once we develop the model, we created a spatial grid that encompassed the sea ice to obtain values to use in our model (centroid of the grid cell). The underlying process should be smooth within an intersection, so the centroid should be close enough that it has a similar value of the underlying process. Once we create the grid for initial location estimates of the missing data, we used the developed bivariate model to find the predicted locations using the posterior mean of the linear predictor. The estimates are added to the previous day's known location to obtain the esimate of the missing location.
+
+Now I'm going to walk through some of the results for our model using the sea ice trajectories. For testing, we created a model for each intersection and time combination. So if we had p intersections, which vary by week, and t time points, then t x p models are developed. Due to observing most of the ice sheet every three days, our response in the model was the movement over three days. Of the observed data in an intersection with a known location after three days, we randomly removed 10%. Then using the observed data, we fit the spatial model with a time fixed effect as it is computationally more efficient than the spatio-temporal model. Also, since we are only using three days to develop our model, there is probably not a significant amount of temporal dependence, as shown in the simulation study, where the spatial model sometimes performs better than the spatio-temporal model (for y). This model was used to estimate the underlying process that drives movement over three days.
+
+
+
+---
+class:primary
+#Example Results - Week 1
+
+.pull-left[
+
+**RMSE for Interpolation Methods by cluster for Week 1**
+&lt;table&gt;
+ &lt;thead&gt;
+&lt;tr&gt;
+&lt;th style="empty-cells: hide;border-bottom:hidden;" colspan="1"&gt;&lt;/th&gt;
+&lt;th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2"&gt;&lt;div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; "&gt;Joint Spatial&lt;/div&gt;&lt;/th&gt;
+&lt;th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="2"&gt;&lt;div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; "&gt;Linear&lt;/div&gt;&lt;/th&gt;
+&lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:center;"&gt; Cluster &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; X &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Y &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; X &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Y &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4.410 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 15.50 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1.330 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 21.800 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.443 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.87 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.303 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.527 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1.120 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1.48 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1.770 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4.740 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1.140 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1.98 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.920 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 3.420 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.549 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1.98 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.969 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5.507 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1.320 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.97 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.330 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 7.450 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+].pull-right[
+
+**Coverage** 
+
+A benefit of using a model-based approach is that we can determine the uncertainty of our estimate.
+  - Use standard deviation of estimate computed using the posterior marginals, to compute intervals of our estimates. The intervals were used to find the proportion of intervals containing the true amount of movement
+
+&lt;br&gt;
+
+
+| Week |   X   |  Y   |
+|:----:|:-----:|:----:|
+|  1   | 0.389 | 0.37 |
+
+]
+
+
+???
+
+For time, I am just showing the RMSE results for Week 1. Once again, we are comparing it with linear interpolation. Overall our model seems to be performing better than linter interpolation. However, since each cluster is made of different movements we also Look at the RMSEs for each cluster, for x, in week 1, our model performs better than linear interpolation for cluster 3 through 6. The results for the y coordinate are similar, except in week 1, our model also performs better in cluster 1
+
+A benefit of using a model-based approach is that we can determine the uncertainty of our estimate. Using the posterior marginals, we can find the standard deviation of the estimate, which can then be used to create an interval of our estimates. The intervals can then be used to find the proportion of intervals containing the true amount of movement during testing of our models, otherwise known as coverage. Our coverage is pretty low, which is some cause for concern. So there is maybe better priors to use in our inla model, or a better creation of the triangulation, etc. 
+
+
+
+---
+class:primary
+
+# Discussion of Model
+
+
+**Advantages**:
+
++ Takes into account the nonstationarity of the data
++ Showed some improvement, in terms of RMSE, over linear interpolation for curved data that is not highly sampled
++ Able to calculate uncertainty
+  
+**Areas for Improvement**:
+
++ Computational efficiency
++ Coverage shows that there is room for improvement with the prior specification
++ Combine into a one-step process
+
+???
+
+Our model is beneficial as it takes into account the non-stationarity of the data, which is an important component of this specific underlying process. And it Showed some improvement, in terms of RMSE, over linear interpolation for curved data that is not highly sampled. Also, it is able to estimate days on the edges, which linear interpolation is not able to do since it requires two observed locations to estimate in between. Finally we can calculate an uncertainty estimate of our predictions. 
+
+Areas of improvement for our approach include computational efficiency. Due to develop t x p (number of intersections) models, it takes a long time to run (~20-45 minutes). Next, coverage showed there is room for improved with prior specification. Currently assuming the same prior for each model (more efficient), but probably not accurate.
+
+  
 
 ---
 class:primary
@@ -530,18 +753,6 @@ In: &lt;em&gt;Artificial Intelligence Review&lt;/em&gt; 47.1, pp. 123&amp;ndash;
 DOI: &lt;a href="https://doi.org/10.1007/s10462-016-9477-7"&gt;10.1007/s10462-016-9477-7&lt;/a&gt;.&lt;/cite&gt;&lt;/p&gt;
 &lt;/font&gt;
 
----
-class:inverse
-&lt;br&gt;
-&lt;br&gt;
-&lt;br&gt;
-.center[
-# Questions?
-&lt;br&gt;
-&lt;br&gt;
-<svg aria-hidden="true" role="img" viewBox="0 0 512 512" style="height:1em;width:1em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:white;overflow:visible;position:relative;"><path d="M64 112c-8.8 0-16 7.2-16 16v22.1L220.5 291.7c20.7 17 50.4 17 71.1 0L464 150.1V128c0-8.8-7.2-16-16-16H64zM48 212.2V384c0 8.8 7.2 16 16 16H448c8.8 0 16-7.2 16-16V212.2L322 328.8c-38.4 31.5-93.7 31.5-132 0L48 212.2zM0 128C0 92.7 28.7 64 64 64H448c35.3 0 64 28.7 64 64V384c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128z"/></svg> **alisonkleffner@creighton.edu**
-<svg aria-hidden="true" role="img" viewBox="0 0 496 512" style="height:1em;width:0.97em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:white;overflow:visible;position:relative;"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg> **alisonkleffner**
-]
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
@@ -1698,6 +1909,380 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
           /* When the user clicks on the modalImg, close it*/
           modalImgfeaturecomparison4.onclick = function() {
             modalfeaturecomparison4.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalallweekscomp = document.getElementById('modalallweekscomp');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgallweekscomp = document.getElementById('imgallweekscomp');
+          var modalImgallweekscomp = document.getElementById('imgmodalallweekscomp');
+          var captionTextallweekscomp = document.getElementById('captionallweekscomp');
+          imgallweekscomp.onclick = function(){
+            modalallweekscomp.style.display = 'block';
+            modalImgallweekscomp.src = this.src;
+            captionTextallweekscomp.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgallweekscomp.onclick = function() {
+            modalallweekscomp.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalallweekscomp = document.getElementById('modalallweekscomp');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgallweekscomp = document.getElementById('imgallweekscomp');
+          var modalImgallweekscomp = document.getElementById('imgmodalallweekscomp');
+          var captionTextallweekscomp = document.getElementById('captionallweekscomp');
+          imgallweekscomp.onclick = function(){
+            modalallweekscomp.style.display = 'block';
+            modalImgallweekscomp.src = this.src;
+            captionTextallweekscomp.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgallweekscomp.onclick = function() {
+            modalallweekscomp.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalbb_1 = document.getElementById('modalbb_1');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgbb_1 = document.getElementById('imgbb_1');
+          var modalImgbb_1 = document.getElementById('imgmodalbb_1');
+          var captionTextbb_1 = document.getElementById('captionbb_1');
+          imgbb_1.onclick = function(){
+            modalbb_1.style.display = 'block';
+            modalImgbb_1.src = this.src;
+            captionTextbb_1.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgbb_1.onclick = function() {
+            modalbb_1.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalbb_2 = document.getElementById('modalbb_2');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgbb_2 = document.getElementById('imgbb_2');
+          var modalImgbb_2 = document.getElementById('imgmodalbb_2');
+          var captionTextbb_2 = document.getElementById('captionbb_2');
+          imgbb_2.onclick = function(){
+            modalbb_2.style.display = 'block';
+            modalImgbb_2.src = this.src;
+            captionTextbb_2.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgbb_2.onclick = function() {
+            modalbb_2.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalwiggle = document.getElementById('modalwiggle');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgwiggle = document.getElementById('imgwiggle');
+          var modalImgwiggle = document.getElementById('imgmodalwiggle');
+          var captionTextwiggle = document.getElementById('captionwiggle');
+          imgwiggle.onclick = function(){
+            modalwiggle.style.display = 'block';
+            modalImgwiggle.src = this.src;
+            captionTextwiggle.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgwiggle.onclick = function() {
+            modalwiggle.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalbb_1 = document.getElementById('modalbb_1');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgbb_1 = document.getElementById('imgbb_1');
+          var modalImgbb_1 = document.getElementById('imgmodalbb_1');
+          var captionTextbb_1 = document.getElementById('captionbb_1');
+          imgbb_1.onclick = function(){
+            modalbb_1.style.display = 'block';
+            modalImgbb_1.src = this.src;
+            captionTextbb_1.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgbb_1.onclick = function() {
+            modalbb_1.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalbb_2 = document.getElementById('modalbb_2');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgbb_2 = document.getElementById('imgbb_2');
+          var modalImgbb_2 = document.getElementById('imgmodalbb_2');
+          var captionTextbb_2 = document.getElementById('captionbb_2');
+          imgbb_2.onclick = function(){
+            modalbb_2.style.display = 'block';
+            modalImgbb_2.src = this.src;
+            captionTextbb_2.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgbb_2.onclick = function() {
+            modalbb_2.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalwiggle = document.getElementById('modalwiggle');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgwiggle = document.getElementById('imgwiggle');
+          var modalImgwiggle = document.getElementById('imgmodalwiggle');
+          var captionTextwiggle = document.getElementById('captionwiggle');
+          imgwiggle.onclick = function(){
+            modalwiggle.style.display = 'block';
+            modalImgwiggle.src = this.src;
+            captionTextwiggle.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgwiggle.onclick = function() {
+            modalwiggle.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalbb_1 = document.getElementById('modalbb_1');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgbb_1 = document.getElementById('imgbb_1');
+          var modalImgbb_1 = document.getElementById('imgmodalbb_1');
+          var captionTextbb_1 = document.getElementById('captionbb_1');
+          imgbb_1.onclick = function(){
+            modalbb_1.style.display = 'block';
+            modalImgbb_1.src = this.src;
+            captionTextbb_1.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgbb_1.onclick = function() {
+            modalbb_1.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalbb_2 = document.getElementById('modalbb_2');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgbb_2 = document.getElementById('imgbb_2');
+          var modalImgbb_2 = document.getElementById('imgmodalbb_2');
+          var captionTextbb_2 = document.getElementById('captionbb_2');
+          imgbb_2.onclick = function(){
+            modalbb_2.style.display = 'block';
+            modalImgbb_2.src = this.src;
+            captionTextbb_2.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgbb_2.onclick = function() {
+            modalbb_2.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalwiggle = document.getElementById('modalwiggle');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgwiggle = document.getElementById('imgwiggle');
+          var modalImgwiggle = document.getElementById('imgmodalwiggle');
+          var captionTextwiggle = document.getElementById('captionwiggle');
+          imgwiggle.onclick = function(){
+            modalwiggle.style.display = 'block';
+            modalImgwiggle.src = this.src;
+            captionTextwiggle.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgwiggle.onclick = function() {
+            modalwiggle.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalmeshex = document.getElementById('modalmeshex');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgmeshex = document.getElementById('imgmeshex');
+          var modalImgmeshex = document.getElementById('imgmodalmeshex');
+          var captionTextmeshex = document.getElementById('captionmeshex');
+          imgmeshex.onclick = function(){
+            modalmeshex.style.display = 'block';
+            modalImgmeshex.src = this.src;
+            captionTextmeshex.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgmeshex.onclick = function() {
+            modalmeshex.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalinsettrajplot = document.getElementById('modalinsettrajplot');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imginsettrajplot = document.getElementById('imginsettrajplot');
+          var modalImginsettrajplot = document.getElementById('imgmodalinsettrajplot');
+          var captionTextinsettrajplot = document.getElementById('captioninsettrajplot');
+          imginsettrajplot.onclick = function(){
+            modalinsettrajplot.style.display = 'block';
+            modalImginsettrajplot.src = this.src;
+            captionTextinsettrajplot.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImginsettrajplot.onclick = function() {
+            modalinsettrajplot.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalrgps_grid = document.getElementById('modalrgps_grid');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgrgps_grid = document.getElementById('imgrgps_grid');
+          var modalImgrgps_grid = document.getElementById('imgmodalrgps_grid');
+          var captionTextrgps_grid = document.getElementById('captionrgps_grid');
+          imgrgps_grid.onclick = function(){
+            modalrgps_grid.style.display = 'block';
+            modalImgrgps_grid.src = this.src;
+            captionTextrgps_grid.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgrgps_grid.onclick = function() {
+            modalrgps_grid.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modaldata_example = document.getElementById('modaldata_example');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgdata_example = document.getElementById('imgdata_example');
+          var modalImgdata_example = document.getElementById('imgmodaldata_example');
+          var captionTextdata_example = document.getElementById('captiondata_example');
+          imgdata_example.onclick = function(){
+            modaldata_example.style.display = 'block';
+            modalImgdata_example.src = this.src;
+            captionTextdata_example.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgdata_example.onclick = function() {
+            modaldata_example.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalrgps_grid = document.getElementById('modalrgps_grid');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgrgps_grid = document.getElementById('imgrgps_grid');
+          var modalImgrgps_grid = document.getElementById('imgmodalrgps_grid');
+          var captionTextrgps_grid = document.getElementById('captionrgps_grid');
+          imgrgps_grid.onclick = function(){
+            modalrgps_grid.style.display = 'block';
+            modalImgrgps_grid.src = this.src;
+            captionTextrgps_grid.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgrgps_grid.onclick = function() {
+            modalrgps_grid.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modaldata_example = document.getElementById('modaldata_example');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgdata_example = document.getElementById('imgdata_example');
+          var modalImgdata_example = document.getElementById('imgmodaldata_example');
+          var captionTextdata_example = document.getElementById('captiondata_example');
+          imgdata_example.onclick = function(){
+            modaldata_example.style.display = 'block';
+            modalImgdata_example.src = this.src;
+            captionTextdata_example.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgdata_example.onclick = function() {
+            modaldata_example.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalrgps_grid = document.getElementById('modalrgps_grid');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgrgps_grid = document.getElementById('imgrgps_grid');
+          var modalImgrgps_grid = document.getElementById('imgmodalrgps_grid');
+          var captionTextrgps_grid = document.getElementById('captionrgps_grid');
+          imgrgps_grid.onclick = function(){
+            modalrgps_grid.style.display = 'block';
+            modalImgrgps_grid.src = this.src;
+            captionTextrgps_grid.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgrgps_grid.onclick = function() {
+            modalrgps_grid.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modaldata_example = document.getElementById('modaldata_example');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgdata_example = document.getElementById('imgdata_example');
+          var modalImgdata_example = document.getElementById('imgmodaldata_example');
+          var captionTextdata_example = document.getElementById('captiondata_example');
+          imgdata_example.onclick = function(){
+            modaldata_example.style.display = 'block';
+            modalImgdata_example.src = this.src;
+            captionTextdata_example.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgdata_example.onclick = function() {
+            modaldata_example.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalrgps_grid = document.getElementById('modalrgps_grid');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgrgps_grid = document.getElementById('imgrgps_grid');
+          var modalImgrgps_grid = document.getElementById('imgmodalrgps_grid');
+          var captionTextrgps_grid = document.getElementById('captionrgps_grid');
+          imgrgps_grid.onclick = function(){
+            modalrgps_grid.style.display = 'block';
+            modalImgrgps_grid.src = this.src;
+            captionTextrgps_grid.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgrgps_grid.onclick = function() {
+            modalrgps_grid.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modaldata_example = document.getElementById('modaldata_example');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgdata_example = document.getElementById('imgdata_example');
+          var modalImgdata_example = document.getElementById('imgmodaldata_example');
+          var captionTextdata_example = document.getElementById('captiondata_example');
+          imgdata_example.onclick = function(){
+            modaldata_example.style.display = 'block';
+            modalImgdata_example.src = this.src;
+            captionTextdata_example.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgdata_example.onclick = function() {
+            modaldata_example.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modaltrajexample = document.getElementById('modaltrajexample');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgtrajexample = document.getElementById('imgtrajexample');
+          var modalImgtrajexample = document.getElementById('imgmodaltrajexample');
+          var captionTexttrajexample = document.getElementById('captiontrajexample');
+          imgtrajexample.onclick = function(){
+            modaltrajexample.style.display = 'block';
+            modalImgtrajexample.src = this.src;
+            captionTexttrajexample.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgtrajexample.onclick = function() {
+            modaltrajexample.style.display = 'none';
           }
 </script>
 
