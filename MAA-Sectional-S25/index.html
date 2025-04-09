@@ -1,0 +1,1735 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Visualization and Modeling of Sea Ice Trajectories</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Alison Kleffner" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/metropolis-fonts.css" rel="stylesheet" />
+    <link href="libs/remark-css/metropolis.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/modal.css" type="text/css" />
+    <link rel="stylesheet" href="css/sizeformat.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+class:title-slide-custom
+
+
+&lt;style&gt;
+
+/* colors: #005CA9 for blue, #00235D for navy blue, #6CADDE for light blue, #828282 for gray, #C8C8C8 for light gray, and #FFFFFF for white. */
+/* define the new color palette here! */
+a, a &gt; code {
+  color: #00235D;
+  text-decoration: none;
+}
+
+.title-slide h2::after, .mline h1::after {
+  content: '';
+  display: block;
+  border: none;
+  background-color: #00235D;
+  color: #00235D;
+  height: 2px;
+}
+
+.remark-slide-content {
+  background-color: #FFFFFF;
+  border-top: 80px solid #00235D;
+  font-size: 20px;
+  font-weight: 300;
+  line-height: 1.5;
+  &lt;!-- padding: 1em 2em 1em 2em --&gt;
+  background-image: url(css/CU.png);
+	background-position: 2% 98%;
+	background-size: 10%;
+	border-bottom: 0;
+}
+
+.inverse {
+  background-color: #00235D;
+  &lt;!-- border-top: 20px solid #696969; --&gt;
+  &lt;!-- background-image: none; --&gt;
+	&lt;!-- background-position: 50% 75%; --&gt;
+  &lt;!-- background-size: 150px; --&gt;
+}
+
+.remark-slide-content &gt; h1 {
+  font-family: 'Roboto';
+  font-weight: 300;
+  font-size: 45px;
+  margin-top: -95px;
+  margin-left: -00px;
+  color: #FFFFFF;
+}
+
+.title-slide {
+  background-color: #FFFFFF;
+  &lt;!-- border-left: 80px solid 	#8B0000; --&gt;
+  background-image:  url(css/CU.png);
+	background-position: 98% 98%;
+	&lt;!-- background-attachment: fixed, fixed; --&gt;
+	background-size: 20%;
+	border-bottom: 0;
+	border: 10px solid 	#00235D;
+	&lt;!-- background: transparent; --&gt;
+}
+
+.title-slide &gt; h1  {
+  color: #111111;
+  font-size: 32px;
+  text-shadow: none;
+  font-weight: 500;
+  text-align: left;
+  margin-left: 15px;
+  padding-top: 80px;
+}
+.title-slide &gt; h2  {
+  margin-top: -25px;
+  padding-bottom: -20px;
+  color: #111111;
+  text-shadow: none;
+  font-weight: 100;
+  font-size: 28px;
+  text-align: left;
+  margin-left: 15px;
+}
+.title-slide &gt; h3  {
+  color: #111111;
+  text-shadow: none;
+  font-weight: 100;
+  font-size: 28px;
+  text-align: left;
+  margin-left: 15px;
+  margin-bottom: -20px;
+}
+
+body {
+  font-family: 'Roboto';
+  font-weight: 300;
+}
+
+.remark-slide-number {
+  font-size: 13pt;
+  font-family: 'Roboto';
+  color: #272822;
+  opacity: 1;
+}
+
+.inverse .remark-slide-number {
+  font-size: 13pt;
+  font-family: 'Roboto';
+  color: #FAFAFA;
+  opacity: 1;
+}
+
+.title-slide-custom .remark-slide-number {
+  display: none;
+}
+
+.title-slide-custom h3::after, .mline h1::after {
+  content: '';
+  display: block;
+  border: none;
+  background-color: #00235D;
+  color: #00235D;
+  height: 2px;
+}
+
+.title-slide-custom {
+  background-color: #FFFFFF;
+  &lt;!-- border-left: 80px solid 	#8B0000; --&gt;
+  background-image:  url(css/CU.png);
+	background-position: 98% 98%;
+	&lt;!-- background-attachment: fixed, fixed; --&gt;
+	background-size: 20%;
+	border-bottom: 0;
+	border: 10px solid 	#00235D;
+	&lt;!-- background: transparent; --&gt;
+}
+
+.title-slide-custom &gt; h1  {
+  color: #111111;
+  font-size: 40px;
+  text-shadow: none;
+  font-weight: 500;
+  text-align: left;
+  margin-left: 15px;
+  padding-top: 80px;
+  padding-bottom: 10px;
+}
+.title-slide-custom &gt; h2  {
+  margin-top: -25px;
+  padding-bottom: 30px;
+  color: #111111;
+  text-shadow: none;
+  font-weight: 100;
+  font-size: 32px;
+  text-align: left;
+  margin-left: 15px;
+}
+.title-slide-custom &gt; h3  {
+  margin-top: -25px;
+  padding-bottom: -25px;
+  color: #111111;
+  text-shadow: none;
+  font-weight: 100;
+  font-size: 32px;
+  text-align: left;
+  margin-left: 15px;
+}
+.title-slide-custom &gt; h4  {
+  color: #111111;
+  text-shadow: none;
+  font-weight: 100;
+  font-size: 28px;
+  text-align: left;
+  margin-left: 15px;
+  margin-bottom: -30px;
+  padding-bottom: -25px;
+}
+.title-slide-custom &gt; h5  {
+  color: #111111;
+  text-shadow: none;
+  font-weight: 100;
+  font-size: 24px;
+  text-align: left;
+  margin-left: 15px;
+  margin-bottom: -40px;
+}
+
+&lt;!-- img { --&gt;
+&lt;!--   max-width: 50%; --&gt;
+&lt;!-- } --&gt;
+
+&lt;/style&gt;
+
+
+
+
+
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;
+## Visualization of Correlation within Spatial Experimental Plots
+#### Alison Kleffner
+#### Department of Mathematics, Creighton University
+##### <svg aria-hidden="true" role="img" viewBox="0 0 512 512" style="height:1em;width:1em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:black;overflow:visible;position:relative;"><path d="M64 112c-8.8 0-16 7.2-16 16v22.1L220.5 291.7c20.7 17 50.4 17 71.1 0L464 150.1V128c0-8.8-7.2-16-16-16H64zM48 212.2V384c0 8.8 7.2 16 16 16H448c8.8 0 16-7.2 16-16V212.2L322 328.8c-38.4 31.5-93.7 31.5-132 0L48 212.2zM0 128C0 92.7 28.7 64 64 64H448c35.3 0 64 28.7 64 64V384c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128z"/></svg> [alisonkleffner@creighton.edu](email.address@creighton.edu)
+##### <svg aria-hidden="true" role="img" viewBox="0 0 576 512" style="height:1em;width:1.12em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:black;overflow:visible;position:relative;"><path d="M575.8 255.5c0 18-15 32.1-32 32.1h-32l.7 160.2c0 2.7-.2 5.4-.5 8.1V472c0 22.1-17.9 40-40 40H456c-1.1 0-2.2 0-3.3-.1c-1.4 .1-2.8 .1-4.2 .1H416 392c-22.1 0-40-17.9-40-40V448 384c0-17.7-14.3-32-32-32H256c-17.7 0-32 14.3-32 32v64 24c0 22.1-17.9 40-40 40H160 128.1c-1.5 0-3-.1-4.5-.2c-1.2 .1-2.4 .2-3.6 .2H104c-22.1 0-40-17.9-40-40V360c0-.9 0-1.9 .1-2.8V287.6H32c-18 0-32-14-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231.5c8 7 12 15 11 24z"/></svg> [https://alison-kleffner.netlify.app/](https://alison-kleffner.netlify.app/)
+##### <svg aria-hidden="true" role="img" viewBox="0 0 496 512" style="height:1em;width:0.97em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:black;overflow:visible;position:relative;"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg> [alisonkleffner](https://github.com/alisonkleffner)
+&lt;br&gt;&lt;br&gt;
+.medium[*Slides: https://alisonkleffner.github.io/presentations-creighton/graphics-group/S24/index.html#1*]
+
+---
+class:primary
+# Outline
+
+---
+class:primary
+# Motivation
+
+The rapid development of technology, like global position systems (GPS) and geographic information systems (GIS), has led to a dramatic increase in the amount of spatial and spatio-temporal data collected (Ansari, Ahmad, Khan et al., 2020) 
+
++ This growth has necessitated the development of new techniques to work with this data (Yuan, Sun, Zhao et al., 2017)
++ We focus on environmental applications with multivariate spatial data and trajectory data.
+
+---
+class:primary
+# Motivation
+
+**Interest**: Discover patterns within the trajectories to help understand their behavior (Andrienko, Andrienko, and Wrobel, 2007) 
+
+**A Method**: Visualization during Exploratory Data Analysis (EDA):  
+  + Trajectories are difficult to visualize (messy)
+  + Provide insight into the underlying dynamics driving movement.
+
+**Extract Features**: Since trajectories are complex, so we can extract features from the raw data (Harold, Lorenzoni, Shipley et al., 2016) 
+  + Can use visualization to motivate feature creation
+  + Want to create features that provide a quantitative summary of the movement seen in plots 
+
+**Case Study**: Arctic Sea Ice Crack Detection
+
+???
+
+Of common interest with trajectories is to discover patterns within their movements to help understand the trajectories behavior. One method to help discover these patterns is to visualize the trajectories during exploratory data analysis. These plots tend to messy due to the complexity of trajectories, but they can still provide some insight into the underlying dynamics driving movement. Since trajectories are complex, extracting features form them may make them easier to work within different methods. The features should summarize it's movement. Visualization can be used to motivate the creation of features. For example, Wu et al (2022) developed a method called TPoSTE which created features based on events to separate a boat's trajectory into period of fishing or sailing. For our process, we focus on a case study involving arctic sea ice trajectories.
+
+---
+class:primary
+
+# Importance of Arctic Sea Ice Crack Detection
+
++ Sea ice serves as a barrier between the atmosphere and the ocean
++ Cracks, or leads, may form in the ice pack due to dynamic processes
+  - Allows for heat from the ocean to be transferred to the atmosphere (Schreyer, Sulsky, Munday et al., 2006). 
+  - Accounts for half of the heat flux between the ocean and atmosphere (Badgley, 1961)
++ Previous ice crack detection methods can generally be split into two categories: thermal and deformation. 
+  
+
+.center[
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imgIceChunk' src='images/Ice Chunk.png' alt=' Artice Sea Ice with Crack' width='40%'&gt;
+&lt;!-- The Modal --&gt;
+&lt;div id='modalIceChunk' class='modal'&gt;
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodalIceChunk'&gt;
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captionIceChunk' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+]
+
+
+
+---
+class:primary
+# Data
+
+.center[
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imgrgps_grid' src='images/rgps_grid.jpg' alt='Example of initial grid used to track movement (Peterson &amp; Sulsky, 2011)' width='25%'&gt;
+&lt;!-- The Modal --&gt;
+&lt;div id='modalrgps_grid' class='modal'&gt;
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodalrgps_grid'&gt;
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captionrgps_grid' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+]
+
++ Arctic Sea Ice is tracked by NASA's RADARSTAT Geophysical Processor System (RGPS), which uses synthetic aperture radar (SAR) images
++ Each grid cell vertex is assigned an identifier `\((j=1,...,n)\)` which is used for tracking
++ Set of all trajectories: 
+
+.center[
+`\(\mathcal{G} = \left\{g_1, ..., g_n\right\}\)` `\(\\\)`
+where `\(g_{j} = \left\{s_{jt} : t \in \mathcal{T}_j\right\}\)`, `\(\mathcal{T}_j \subset \left\{t=1...T\right\}\)` a collection of time points where `\(g_j\)` is observed `\(\\\)`
+and `\({s_{jt}}\)` = `\((x_{jt}, y_{jt})\)`
+]
+
++ For our study region, `\(n\)` = 8811, and `\(T\)` = 22
+
+???
+
+The sea ice trajectories were tracked by NASA's RADARSTATE geophysical processor system (RGPS), which uses sequential synthetic aperture radar images to track the trajectory of point on an ice sheet. On the first day of the study period, a grid is put on the image, where each grid cell vertex is assigned an identifier (j) that is tracked over the study period using feature based and area based tracking. At the end of the study period we have a data set of n trajectories, where each trajectory is a collection of spatial locations at different times. Due to collecting this data with a satellite, not all the trajectories are observed on the same day, so we have a collection of possible times. We focused on the Beaufort region, so we have a total of 8811 trajectories on 22 possible days.
+
+---
+class:primary
+# Gestalt Principles of Visual Perception
+
+**Identifing Patterns**: Can use the gestalt principles of visual perception to process large amounts of data efficiently. 
++ Explains how humans naturally perceive objects and organize them in groups
+
+.pull-left[
+Principle of Similarity: group items that look similar .
+  + Trajectories with similar shapes and orientations (Chalbi, Ritchie, Park et al., 2020)
+.center[  
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imglawsim' src='images/law-sim.png' alt='Example of gestalt law of similarity' width='40%'&gt;
+&lt;!-- The Modal --&gt;
+&lt;div id='modallawsim' class='modal'&gt;
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodallawsim'&gt;
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captionlawsim' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+]
+].pull-right[
+Principle of Common Fate: group objects that share a dynamic behavior
+  + Affected by the same underlying processes (Chalbi, Ritchie, Park et al., 2020; Alais
+David &amp; Lee, 1998) 
+.center[
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imgcommonfate' src='images/common-fate.png' alt='Example of gestalt law of common fate' width='60%'&gt;
+&lt;!-- The Modal --&gt;
+&lt;div id='modalcommonfate' class='modal'&gt;
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodalcommonfate'&gt;
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captioncommonfate' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+]]
+
+???
+
+Before we look at visualizations of the trajectories used during EDA, I first wanted to talk about an important tool to help extract patterns. The gestalt principles of visual perception helps users process large amounts of data efficiently by explaining how humans naturally perceive objects and organize them into groups. There are multiple, but we are going to focus on three here. The principle of similarity says that people tend to group items that look similar. So we organize trajectories with similar shapes and orientations into groups. Second is the principle of common fate used with animated graphics. This principle says that people group objects that share a dynamic behavior, like a flock of birds, as this means those objects are potentially affected by the same underlying processes. 
+
+---
+class:primary
+
+# Static Trajectory Plot
+
+
++ Line segments, with the direction of each trajectory denoted by an arrow at the end (Andrienko, Andrienko, and Gatalsky, 2000) 
+  - Shows the displacement and direction over time.
++ This plot violates several guidelines for effective visualization, making it
+unsuitable for presentation.
+  - However, the principle of similarity helps a viewer easily group trajectories that look to move with a similar form in the same direction over time
+
+.center[
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imgtraj_plot' src='images/traj_plot.png' alt='Plot of id trajectories to show movement and directiction of movement' width='55%'&gt;
+&lt;!-- The Modal --&gt;
+&lt;div id='modaltraj_plot' class='modal'&gt;
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodaltraj_plot'&gt;
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captiontraj_plot' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+]
+
+???
+
+First, we created a static plot of all of our trajectories, which connected each observed location of a trajectory with a line segment, and an arrow was added to the end to show the ending direction of movement. So this plot shows the displacement and direction of each trajectory over time.This plot is messy and violates several principles of effective graphics. For example, it's cluttered (trajectories on top of each other), and the color has no meaning (was just used to help visually differentiate the different trajectories better). The coloring is potentially problematic due to the principle of similarity, a user may group all similarly colored trajectories and try to derive a relationship which would be inaccurate. However, using the principle of similarity is also helpful as we can see group of trajectories that look to move with a similar form in the same direction. These groups tend to occur in contiguous patches and stick out even though the plot is kind of a mess. So we can make an assumption, that the underlying process causing the sea ice to move changes based on the location. 
+
+---
+class:primary
+# Animated Trajectory Plot
+
+[Link](https://alisonkleffner.github.io/yield-map-redesign/interactive-new.html)
+
++ Shows the incremental progress of each trajectory over time
+  - Plot the new location at each time step and connect the new observation with the previous through a line segment. 
++ New information:
+  - See a trajectory speeding up or slowing down through the length of the added line segments. 
+  - Associate a movement with a particular day
++ Using gestalt principle of common fate
+  - Trajectories moving with a similar velocity in contiguous patches.
+
+???
+
+Another drawback of the static trajectory plot is the inability to associated different movements with a specific time. So don't learn things related to specific times, just total time. So we can create an animation of our movement. We chose to use animation as Griffin et al (2006) found that animated plots allows users to identify moving clusters easier than multiple juxtaposed static plots. In our animated plot, we showed the incremental process of each trajectory on each day by adding the movement for a day, represented by a line segment, to the previous days movement. Now we can see the trajectory speeding up and slowing down based on the length of added line segments. Further, we can associate a movement with a particular day, like what day a trajectory changes direction. Here we can use the principle of common fate to group trajectories moving with a similar velocity (direction/speed), which once again seems to occur in contiguous patches.
+
+---
+class:primary
+
+# Deriving Numerical Features: Bounding Box
+
++ We create a bounding box around for each trajectory to represent it's movement
++ Bounding Box Features:
+  - Length travel in x/y between the minimum and maximum location 
+.center[
+( `\(x_{max} - x_{min}\)` and `\(y_{max} - y_{min}\)`)]
+  - Length travel in x/y between latest and earliest observation 
+  .center[
+  ( `\(x_{2} - x_{1}\)` and `\(y_{2} - y_{1}\)`)]
+  - Angle of movement (direction)
+
+.center[
+.pull-left[
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imgbb_1' src='images/bb_1.png' alt='Points used to Develop Bounding Box 1' width='75%'&gt;
+&lt;!-- The Modal --&gt;
+&lt;div id='modalbb_1' class='modal'&gt;
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodalbb_1'&gt;
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captionbb_1' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+].pull-right[
+
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imgbb_2' src='images/bb_2.png' alt='Points used to Develop Bounding Box 2' width='55%'&gt;
+&lt;!-- The Modal --&gt;
+&lt;div id='modalbb_2' class='modal'&gt;
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodalbb_2'&gt;
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captionbb_2' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+]
+]
+
+???
+
+After visually exploring the data during exploratory data analysis, we wanted to derive numerical features based on the visualizations. This was done by creating essentially a bounding box around each trajectory, which represents its movement over time. We can then calculate different features from this bounding box. First, we can find the distance between the maximum and minimum coordinates (total displacement). Second, this value may not always represent the first and last day of the time frame, so we also found the different between the latest and earliest observation (displacement in time). Finally, using the displacement in time, we found the angle that the trajectory moved over the time frame.
+
+
+---
+class:primary
+# Deriving Numerical Features: Wiggle
+
+.center[
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imgwiggle' src='images/wiggle.png' alt='Wiggle Calculation' width='50%'&gt;
+&lt;!-- The Modal --&gt;
+&lt;div id='modalwiggle' class='modal'&gt;
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodalwiggle'&gt;
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captionwiggle' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+]
+
++ To determine the amount of “wiggle”, we estimated the total length of the trajectory (arc length).
+  - Find the distance between each set of two connected
+points (yellow lines).
+  - Add all the calculated distances to estimate the total length of the trajectory.
+  - Trajectories with a higher total length are "wigglier"
+
+???
+
+Next, besides the bounding box, we wanted to derive a numerical assessment of "wiggle", as this is something that can be seen but may be hard to quantify. How I began to think through this was by imaging we pulled a trajectory so that it was straight. Trajectories with more wiggle would be longer that those with less wiggle. Since each trajectory consists of observed points connected by line segments, I found the length of each line segment and atted them all together (estimate of act length). So the trajectories with a higher total length are wigglier.
+
+---
+class:primary
+
+#Clustering with K-Means
+
++ Bounding Box features were used as input into K-Means clustering, which partitions n observations into k clusters.
++ K-Means Clustering (Steinley, 2006)
+  - All observations must belong to a cluster and each cluster, k, must have at least one observation
+  - Iterative Procedure 
+  - Minimize squared Euclidean distance between an observation and the centroid vector of a cluster
+  - Centroid vector found by averaging the features of each cluster member
+
+
+---
+class:primary
+# Feature Selection
+
++ Not all characteristics of a trajectory are simultaneously relevant (Rinzivillo, Pedreschi, Nanni et al., 2008)
++ Clustering algorithm to assign trajectories to groups of similar
+movements 
++ No label information to help evaluate feature importance, used visualization to make judgements (Li, Cheng, Wang et al., 2017).
+  - Redundant:  adding it to the clustering algorithm, while
+holding the other variables constant, does not change the assigned clusters.
+  - Relevance: help with cluster continuity
+
+.center[
+&lt;!-- Trigger the Modal --&gt;
+&lt;img id='imgfeaturecomparison4' src='images/feature-comparison4.png' alt='Subsets of Clusters to Determine Relevant Features' width='60%'&gt;
+&lt;!-- The Modal --&gt;
+&lt;div id='modalfeaturecomparison4' class='modal'&gt;
+  &lt;!-- Modal Content (The Image) --&gt;
+  &lt;img class='modal-content' id='imgmodalfeaturecomparison4'&gt;
+  &lt;!-- Modal Caption (Image Text) --&gt;
+  &lt;div id='captionfeaturecomparison4' class='modal-caption'&gt;&lt;/div&gt;
+&lt;/div&gt;
+]
+
+???
+
+Finally, not all characteristics of a trajectory are simultaneously relevant when analyzing trajectories, so we wanted to employ feature selection to assess relevancy. Since we could see the movement occurring in contiguous patches, we applied a clustering algorithm to find this groups of similar movements. So we have no label information (don't know true trajectories), we used  visualization to make judgements. So assigned each cluster a color, and output a single point of each trajectory with the assigned color onto a map. We classified redundant features as adding a feature to the clustering does not change the assigned cluster. Further, we wanted our features to help create continguous clusters. Did not text all possible subsets of features, just some I thought was relevant.  (Explain process). Plot 4 is the features selected.
+
+
+---
+class:primary
+# References
+&lt;font size="1.5"&gt;
+&lt;p&gt;&lt;cite&gt;&lt;a id='bib-ansari_spatiotemporal_2020'&gt;&lt;/a&gt;&lt;a href="#cite-ansari_spatiotemporal_2020"&gt;Ansari, M. Y., A. Ahmad, S. S. Khan, et al.&lt;/a&gt;
+(2020).
+&amp;ldquo;Spatiotemporal clustering: a review&amp;rdquo;.
+In: &lt;em&gt;Artificial Intelligence Review&lt;/em&gt; 53.4, pp. 2381&amp;ndash;2423.
+DOI: &lt;a href="https://doi.org/10.1007/s10462-019-09736-1"&gt;10.1007/s10462-019-09736-1&lt;/a&gt;.&lt;/cite&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;cite&gt;&lt;a id='bib-yuan_review_2017'&gt;&lt;/a&gt;&lt;a href="#cite-yuan_review_2017"&gt;Yuan, G., P. Sun, J. Zhao, et al.&lt;/a&gt;
+(2017).
+&amp;ldquo;A Review of Moving Object Trajectory Clustering Algorithms&amp;rdquo;.
+In: &lt;em&gt;Artificial Intelligence Review&lt;/em&gt; 47.1, pp. 123&amp;ndash;144.
+DOI: &lt;a href="https://doi.org/10.1007/s10462-016-9477-7"&gt;10.1007/s10462-016-9477-7&lt;/a&gt;.&lt;/cite&gt;&lt;/p&gt;
+&lt;/font&gt;
+
+---
+class:inverse
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.center[
+# Questions?
+&lt;br&gt;
+&lt;br&gt;
+<svg aria-hidden="true" role="img" viewBox="0 0 512 512" style="height:1em;width:1em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:white;overflow:visible;position:relative;"><path d="M64 112c-8.8 0-16 7.2-16 16v22.1L220.5 291.7c20.7 17 50.4 17 71.1 0L464 150.1V128c0-8.8-7.2-16-16-16H64zM48 212.2V384c0 8.8 7.2 16 16 16H448c8.8 0 16-7.2 16-16V212.2L322 328.8c-38.4 31.5-93.7 31.5-132 0L48 212.2zM0 128C0 92.7 28.7 64 64 64H448c35.3 0 64 28.7 64 64V384c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V128z"/></svg> **alisonkleffner@creighton.edu**
+<svg aria-hidden="true" role="img" viewBox="0 0 496 512" style="height:1em;width:0.97em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:white;overflow:visible;position:relative;"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg> **alisonkleffner**
+]
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightlines": true,
+"countIncrementalSlides": true
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();</script>
+
+<script>
+        /* Get the modal*/
+          var modalexample2 = document.getElementById('modalexample2');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgexample2 = document.getElementById('imgexample2');
+          var modalImgexample2 = document.getElementById('imgmodalexample2');
+          var captionTextexample2 = document.getElementById('captionexample2');
+          imgexample2.onclick = function(){
+            modalexample2.style.display = 'block';
+            modalImgexample2.src = this.src;
+            captionTextexample2.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgexample2.onclick = function() {
+            modalexample2.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalexample3 = document.getElementById('modalexample3');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgexample3 = document.getElementById('imgexample3');
+          var modalImgexample3 = document.getElementById('imgmodalexample3');
+          var captionTextexample3 = document.getElementById('captionexample3');
+          imgexample3.onclick = function(){
+            modalexample3.style.display = 'block';
+            modalImgexample3.src = this.src;
+            captionTextexample3.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgexample3.onclick = function() {
+            modalexample3.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalexample4 = document.getElementById('modalexample4');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgexample4 = document.getElementById('imgexample4');
+          var modalImgexample4 = document.getElementById('imgmodalexample4');
+          var captionTextexample4 = document.getElementById('captionexample4');
+          imgexample4.onclick = function(){
+            modalexample4.style.display = 'block';
+            modalImgexample4.src = this.src;
+            captionTextexample4.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgexample4.onclick = function() {
+            modalexample4.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalexample5 = document.getElementById('modalexample5');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgexample5 = document.getElementById('imgexample5');
+          var modalImgexample5 = document.getElementById('imgmodalexample5');
+          var captionTextexample5 = document.getElementById('captionexample5');
+          imgexample5.onclick = function(){
+            modalexample5.style.display = 'block';
+            modalImgexample5.src = this.src;
+            captionTextexample5.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgexample5.onclick = function() {
+            modalexample5.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalold_map = document.getElementById('modalold_map');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgold_map = document.getElementById('imgold_map');
+          var modalImgold_map = document.getElementById('imgmodalold_map');
+          var captionTextold_map = document.getElementById('captionold_map');
+          imgold_map.onclick = function(){
+            modalold_map.style.display = 'block';
+            modalImgold_map.src = this.src;
+            captionTextold_map.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgold_map.onclick = function() {
+            modalold_map.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalold_map = document.getElementById('modalold_map');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgold_map = document.getElementById('imgold_map');
+          var modalImgold_map = document.getElementById('imgmodalold_map');
+          var captionTextold_map = document.getElementById('captionold_map');
+          imgold_map.onclick = function(){
+            modalold_map.style.display = 'block';
+            modalImgold_map.src = this.src;
+            captionTextold_map.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgold_map.onclick = function() {
+            modalold_map.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalold_map = document.getElementById('modalold_map');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgold_map = document.getElementById('imgold_map');
+          var modalImgold_map = document.getElementById('imgmodalold_map');
+          var captionTextold_map = document.getElementById('captionold_map');
+          imgold_map.onclick = function(){
+            modalold_map.style.display = 'block';
+            modalImgold_map.src = this.src;
+            captionTextold_map.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgold_map.onclick = function() {
+            modalold_map.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modaljuxtaposedex = document.getElementById('modaljuxtaposedex');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgjuxtaposedex = document.getElementById('imgjuxtaposedex');
+          var modalImgjuxtaposedex = document.getElementById('imgmodaljuxtaposedex');
+          var captionTextjuxtaposedex = document.getElementById('captionjuxtaposedex');
+          imgjuxtaposedex.onclick = function(){
+            modaljuxtaposedex.style.display = 'block';
+            modalImgjuxtaposedex.src = this.src;
+            captionTextjuxtaposedex.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgjuxtaposedex.onclick = function() {
+            modaljuxtaposedex.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modaljuxtaposedex = document.getElementById('modaljuxtaposedex');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgjuxtaposedex = document.getElementById('imgjuxtaposedex');
+          var modalImgjuxtaposedex = document.getElementById('imgmodaljuxtaposedex');
+          var captionTextjuxtaposedex = document.getElementById('captionjuxtaposedex');
+          imgjuxtaposedex.onclick = function(){
+            modaljuxtaposedex.style.display = 'block';
+            modalImgjuxtaposedex.src = this.src;
+            captionTextjuxtaposedex.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgjuxtaposedex.onclick = function() {
+            modaljuxtaposedex.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalmaxwell = document.getElementById('modalmaxwell');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgmaxwell = document.getElementById('imgmaxwell');
+          var modalImgmaxwell = document.getElementById('imgmodalmaxwell');
+          var captionTextmaxwell = document.getElementById('captionmaxwell');
+          imgmaxwell.onclick = function(){
+            modalmaxwell.style.display = 'block';
+            modalImgmaxwell.src = this.src;
+            captionTextmaxwell.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgmaxwell.onclick = function() {
+            modalmaxwell.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modaltrevisan = document.getElementById('modaltrevisan');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgtrevisan = document.getElementById('imgtrevisan');
+          var modalImgtrevisan = document.getElementById('imgmodaltrevisan');
+          var captionTexttrevisan = document.getElementById('captiontrevisan');
+          imgtrevisan.onclick = function(){
+            modaltrevisan.style.display = 'block';
+            modalImgtrevisan.src = this.src;
+            captionTexttrevisan.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgtrevisan.onclick = function() {
+            modaltrevisan.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalmaxwell = document.getElementById('modalmaxwell');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgmaxwell = document.getElementById('imgmaxwell');
+          var modalImgmaxwell = document.getElementById('imgmodalmaxwell');
+          var captionTextmaxwell = document.getElementById('captionmaxwell');
+          imgmaxwell.onclick = function(){
+            modalmaxwell.style.display = 'block';
+            modalImgmaxwell.src = this.src;
+            captionTextmaxwell.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgmaxwell.onclick = function() {
+            modalmaxwell.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modaltrevisan = document.getElementById('modaltrevisan');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgtrevisan = document.getElementById('imgtrevisan');
+          var modalImgtrevisan = document.getElementById('imgmodaltrevisan');
+          var captionTexttrevisan = document.getElementById('captiontrevisan');
+          imgtrevisan.onclick = function(){
+            modaltrevisan.style.display = 'block';
+            modalImgtrevisan.src = this.src;
+            captionTexttrevisan.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgtrevisan.onclick = function() {
+            modaltrevisan.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalcomparativegraphs = document.getElementById('modalcomparativegraphs');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgcomparativegraphs = document.getElementById('imgcomparativegraphs');
+          var modalImgcomparativegraphs = document.getElementById('imgmodalcomparativegraphs');
+          var captionTextcomparativegraphs = document.getElementById('captioncomparativegraphs');
+          imgcomparativegraphs.onclick = function(){
+            modalcomparativegraphs.style.display = 'block';
+            modalImgcomparativegraphs.src = this.src;
+            captionTextcomparativegraphs.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgcomparativegraphs.onclick = function() {
+            modalcomparativegraphs.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalold_map = document.getElementById('modalold_map');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgold_map = document.getElementById('imgold_map');
+          var modalImgold_map = document.getElementById('imgmodalold_map');
+          var captionTextold_map = document.getElementById('captionold_map');
+          imgold_map.onclick = function(){
+            modalold_map.style.display = 'block';
+            modalImgold_map.src = this.src;
+            captionTextold_map.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgold_map.onclick = function() {
+            modalold_map.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modaljuxtaposedex = document.getElementById('modaljuxtaposedex');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgjuxtaposedex = document.getElementById('imgjuxtaposedex');
+          var modalImgjuxtaposedex = document.getElementById('imgmodaljuxtaposedex');
+          var captionTextjuxtaposedex = document.getElementById('captionjuxtaposedex');
+          imgjuxtaposedex.onclick = function(){
+            modaljuxtaposedex.style.display = 'block';
+            modalImgjuxtaposedex.src = this.src;
+            captionTextjuxtaposedex.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgjuxtaposedex.onclick = function() {
+            modaljuxtaposedex.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalmaxwell = document.getElementById('modalmaxwell');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgmaxwell = document.getElementById('imgmaxwell');
+          var modalImgmaxwell = document.getElementById('imgmodalmaxwell');
+          var captionTextmaxwell = document.getElementById('captionmaxwell');
+          imgmaxwell.onclick = function(){
+            modalmaxwell.style.display = 'block';
+            modalImgmaxwell.src = this.src;
+            captionTextmaxwell.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgmaxwell.onclick = function() {
+            modalmaxwell.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modaltrevisan = document.getElementById('modaltrevisan');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgtrevisan = document.getElementById('imgtrevisan');
+          var modalImgtrevisan = document.getElementById('imgmodaltrevisan');
+          var captionTexttrevisan = document.getElementById('captiontrevisan');
+          imgtrevisan.onclick = function(){
+            modaltrevisan.style.display = 'block';
+            modalImgtrevisan.src = this.src;
+            captionTexttrevisan.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgtrevisan.onclick = function() {
+            modaltrevisan.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalcomparativegraphs = document.getElementById('modalcomparativegraphs');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgcomparativegraphs = document.getElementById('imgcomparativegraphs');
+          var modalImgcomparativegraphs = document.getElementById('imgmodalcomparativegraphs');
+          var captionTextcomparativegraphs = document.getElementById('captioncomparativegraphs');
+          imgcomparativegraphs.onclick = function(){
+            modalcomparativegraphs.style.display = 'block';
+            modalImgcomparativegraphs.src = this.src;
+            captionTextcomparativegraphs.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgcomparativegraphs.onclick = function() {
+            modalcomparativegraphs.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalold_map = document.getElementById('modalold_map');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgold_map = document.getElementById('imgold_map');
+          var modalImgold_map = document.getElementById('imgmodalold_map');
+          var captionTextold_map = document.getElementById('captionold_map');
+          imgold_map.onclick = function(){
+            modalold_map.style.display = 'block';
+            modalImgold_map.src = this.src;
+            captionTextold_map.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgold_map.onclick = function() {
+            modalold_map.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalold_map = document.getElementById('modalold_map');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgold_map = document.getElementById('imgold_map');
+          var modalImgold_map = document.getElementById('imgmodalold_map');
+          var captionTextold_map = document.getElementById('captionold_map');
+          imgold_map.onclick = function(){
+            modalold_map.style.display = 'block';
+            modalImgold_map.src = this.src;
+            captionTextold_map.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgold_map.onclick = function() {
+            modalold_map.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalmaxwell = document.getElementById('modalmaxwell');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgmaxwell = document.getElementById('imgmaxwell');
+          var modalImgmaxwell = document.getElementById('imgmodalmaxwell');
+          var captionTextmaxwell = document.getElementById('captionmaxwell');
+          imgmaxwell.onclick = function(){
+            modalmaxwell.style.display = 'block';
+            modalImgmaxwell.src = this.src;
+            captionTextmaxwell.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgmaxwell.onclick = function() {
+            modalmaxwell.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modaltrevisan = document.getElementById('modaltrevisan');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgtrevisan = document.getElementById('imgtrevisan');
+          var modalImgtrevisan = document.getElementById('imgmodaltrevisan');
+          var captionTexttrevisan = document.getElementById('captiontrevisan');
+          imgtrevisan.onclick = function(){
+            modaltrevisan.style.display = 'block';
+            modalImgtrevisan.src = this.src;
+            captionTexttrevisan.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgtrevisan.onclick = function() {
+            modaltrevisan.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalcomparativegraphs = document.getElementById('modalcomparativegraphs');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgcomparativegraphs = document.getElementById('imgcomparativegraphs');
+          var modalImgcomparativegraphs = document.getElementById('imgmodalcomparativegraphs');
+          var captionTextcomparativegraphs = document.getElementById('captioncomparativegraphs');
+          imgcomparativegraphs.onclick = function(){
+            modalcomparativegraphs.style.display = 'block';
+            modalImgcomparativegraphs.src = this.src;
+            captionTextcomparativegraphs.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgcomparativegraphs.onclick = function() {
+            modalcomparativegraphs.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalAttempt2 = document.getElementById('modalAttempt2');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgAttempt2 = document.getElementById('imgAttempt2');
+          var modalImgAttempt2 = document.getElementById('imgmodalAttempt2');
+          var captionTextAttempt2 = document.getElementById('captionAttempt2');
+          imgAttempt2.onclick = function(){
+            modalAttempt2.style.display = 'block';
+            modalImgAttempt2.src = this.src;
+            captionTextAttempt2.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgAttempt2.onclick = function() {
+            modalAttempt2.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalAttempt2scale = document.getElementById('modalAttempt2scale');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgAttempt2scale = document.getElementById('imgAttempt2scale');
+          var modalImgAttempt2scale = document.getElementById('imgmodalAttempt2scale');
+          var captionTextAttempt2scale = document.getElementById('captionAttempt2scale');
+          imgAttempt2scale.onclick = function(){
+            modalAttempt2scale.style.display = 'block';
+            modalImgAttempt2scale.src = this.src;
+            captionTextAttempt2scale.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgAttempt2scale.onclick = function() {
+            modalAttempt2scale.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalAttempt2 = document.getElementById('modalAttempt2');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgAttempt2 = document.getElementById('imgAttempt2');
+          var modalImgAttempt2 = document.getElementById('imgmodalAttempt2');
+          var captionTextAttempt2 = document.getElementById('captionAttempt2');
+          imgAttempt2.onclick = function(){
+            modalAttempt2.style.display = 'block';
+            modalImgAttempt2.src = this.src;
+            captionTextAttempt2.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgAttempt2.onclick = function() {
+            modalAttempt2.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalAttempt2scale = document.getElementById('modalAttempt2scale');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgAttempt2scale = document.getElementById('imgAttempt2scale');
+          var modalImgAttempt2scale = document.getElementById('imgmodalAttempt2scale');
+          var captionTextAttempt2scale = document.getElementById('captionAttempt2scale');
+          imgAttempt2scale.onclick = function(){
+            modalAttempt2scale.style.display = 'block';
+            modalImgAttempt2scale.src = this.src;
+            captionTextAttempt2scale.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgAttempt2scale.onclick = function() {
+            modalAttempt2scale.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalbivplotscale = document.getElementById('modalbivplotscale');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgbivplotscale = document.getElementById('imgbivplotscale');
+          var modalImgbivplotscale = document.getElementById('imgmodalbivplotscale');
+          var captionTextbivplotscale = document.getElementById('captionbivplotscale');
+          imgbivplotscale.onclick = function(){
+            modalbivplotscale.style.display = 'block';
+            modalImgbivplotscale.src = this.src;
+            captionTextbivplotscale.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgbivplotscale.onclick = function() {
+            modalbivplotscale.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalcorrplot2 = document.getElementById('modalcorrplot2');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgcorrplot2 = document.getElementById('imgcorrplot2');
+          var modalImgcorrplot2 = document.getElementById('imgmodalcorrplot2');
+          var captionTextcorrplot2 = document.getElementById('captioncorrplot2');
+          imgcorrplot2.onclick = function(){
+            modalcorrplot2.style.display = 'block';
+            modalImgcorrplot2.src = this.src;
+            captionTextcorrplot2.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgcorrplot2.onclick = function() {
+            modalcorrplot2.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalcorrplot2bscale = document.getElementById('modalcorrplot2bscale');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgcorrplot2bscale = document.getElementById('imgcorrplot2bscale');
+          var modalImgcorrplot2bscale = document.getElementById('imgmodalcorrplot2bscale');
+          var captionTextcorrplot2bscale = document.getElementById('captioncorrplot2bscale');
+          imgcorrplot2bscale.onclick = function(){
+            modalcorrplot2bscale.style.display = 'block';
+            modalImgcorrplot2bscale.src = this.src;
+            captionTextcorrplot2bscale.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgcorrplot2bscale.onclick = function() {
+            modalcorrplot2bscale.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalcorrplot2 = document.getElementById('modalcorrplot2');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgcorrplot2 = document.getElementById('imgcorrplot2');
+          var modalImgcorrplot2 = document.getElementById('imgmodalcorrplot2');
+          var captionTextcorrplot2 = document.getElementById('captioncorrplot2');
+          imgcorrplot2.onclick = function(){
+            modalcorrplot2.style.display = 'block';
+            modalImgcorrplot2.src = this.src;
+            captionTextcorrplot2.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgcorrplot2.onclick = function() {
+            modalcorrplot2.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalcorrplot2bscale = document.getElementById('modalcorrplot2bscale');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgcorrplot2bscale = document.getElementById('imgcorrplot2bscale');
+          var modalImgcorrplot2bscale = document.getElementById('imgmodalcorrplot2bscale');
+          var captionTextcorrplot2bscale = document.getElementById('captioncorrplot2bscale');
+          imgcorrplot2bscale.onclick = function(){
+            modalcorrplot2bscale.style.display = 'block';
+            modalImgcorrplot2bscale.src = this.src;
+            captionTextcorrplot2bscale.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgcorrplot2bscale.onclick = function() {
+            modalcorrplot2bscale.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalAttempt2 = document.getElementById('modalAttempt2');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgAttempt2 = document.getElementById('imgAttempt2');
+          var modalImgAttempt2 = document.getElementById('imgmodalAttempt2');
+          var captionTextAttempt2 = document.getElementById('captionAttempt2');
+          imgAttempt2.onclick = function(){
+            modalAttempt2.style.display = 'block';
+            modalImgAttempt2.src = this.src;
+            captionTextAttempt2.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgAttempt2.onclick = function() {
+            modalAttempt2.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalAttempt2scale = document.getElementById('modalAttempt2scale');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgAttempt2scale = document.getElementById('imgAttempt2scale');
+          var modalImgAttempt2scale = document.getElementById('imgmodalAttempt2scale');
+          var captionTextAttempt2scale = document.getElementById('captionAttempt2scale');
+          imgAttempt2scale.onclick = function(){
+            modalAttempt2scale.style.display = 'block';
+            modalImgAttempt2scale.src = this.src;
+            captionTextAttempt2scale.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgAttempt2scale.onclick = function() {
+            modalAttempt2scale.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalbivplotscale = document.getElementById('modalbivplotscale');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgbivplotscale = document.getElementById('imgbivplotscale');
+          var modalImgbivplotscale = document.getElementById('imgmodalbivplotscale');
+          var captionTextbivplotscale = document.getElementById('captionbivplotscale');
+          imgbivplotscale.onclick = function(){
+            modalbivplotscale.style.display = 'block';
+            modalImgbivplotscale.src = this.src;
+            captionTextbivplotscale.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgbivplotscale.onclick = function() {
+            modalbivplotscale.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalbivplotscale = document.getElementById('modalbivplotscale');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgbivplotscale = document.getElementById('imgbivplotscale');
+          var modalImgbivplotscale = document.getElementById('imgmodalbivplotscale');
+          var captionTextbivplotscale = document.getElementById('captionbivplotscale');
+          imgbivplotscale.onclick = function(){
+            modalbivplotscale.style.display = 'block';
+            modalImgbivplotscale.src = this.src;
+            captionTextbivplotscale.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgbivplotscale.onclick = function() {
+            modalbivplotscale.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalinteractivenew = document.getElementById('modalinteractivenew');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imginteractivenew = document.getElementById('imginteractivenew');
+          var modalImginteractivenew = document.getElementById('imgmodalinteractivenew');
+          var captionTextinteractivenew = document.getElementById('captioninteractivenew');
+          imginteractivenew.onclick = function(){
+            modalinteractivenew.style.display = 'block';
+            modalImginteractivenew.src = this.src;
+            captionTextinteractivenew.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImginteractivenew.onclick = function() {
+            modalinteractivenew.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalinteractivenew = document.getElementById('modalinteractivenew');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imginteractivenew = document.getElementById('imginteractivenew');
+          var modalImginteractivenew = document.getElementById('imgmodalinteractivenew');
+          var captionTextinteractivenew = document.getElementById('captioninteractivenew');
+          imginteractivenew.onclick = function(){
+            modalinteractivenew.style.display = 'block';
+            modalImginteractivenew.src = this.src;
+            captionTextinteractivenew.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImginteractivenew.onclick = function() {
+            modalinteractivenew.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalinteractivenew = document.getElementById('modalinteractivenew');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imginteractivenew = document.getElementById('imginteractivenew');
+          var modalImginteractivenew = document.getElementById('imgmodalinteractivenew');
+          var captionTextinteractivenew = document.getElementById('captioninteractivenew');
+          imginteractivenew.onclick = function(){
+            modalinteractivenew.style.display = 'block';
+            modalImginteractivenew.src = this.src;
+            captionTextinteractivenew.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImginteractivenew.onclick = function() {
+            modalinteractivenew.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalcomparativegraphs = document.getElementById('modalcomparativegraphs');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgcomparativegraphs = document.getElementById('imgcomparativegraphs');
+          var modalImgcomparativegraphs = document.getElementById('imgmodalcomparativegraphs');
+          var captionTextcomparativegraphs = document.getElementById('captioncomparativegraphs');
+          imgcomparativegraphs.onclick = function(){
+            modalcomparativegraphs.style.display = 'block';
+            modalImgcomparativegraphs.src = this.src;
+            captionTextcomparativegraphs.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgcomparativegraphs.onclick = function() {
+            modalcomparativegraphs.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalmaxwell = document.getElementById('modalmaxwell');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgmaxwell = document.getElementById('imgmaxwell');
+          var modalImgmaxwell = document.getElementById('imgmodalmaxwell');
+          var captionTextmaxwell = document.getElementById('captionmaxwell');
+          imgmaxwell.onclick = function(){
+            modalmaxwell.style.display = 'block';
+            modalImgmaxwell.src = this.src;
+            captionTextmaxwell.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgmaxwell.onclick = function() {
+            modalmaxwell.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modaltrevisan = document.getElementById('modaltrevisan');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgtrevisan = document.getElementById('imgtrevisan');
+          var modalImgtrevisan = document.getElementById('imgmodaltrevisan');
+          var captionTexttrevisan = document.getElementById('captiontrevisan');
+          imgtrevisan.onclick = function(){
+            modaltrevisan.style.display = 'block';
+            modalImgtrevisan.src = this.src;
+            captionTexttrevisan.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgtrevisan.onclick = function() {
+            modaltrevisan.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalmaxwell = document.getElementById('modalmaxwell');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgmaxwell = document.getElementById('imgmaxwell');
+          var modalImgmaxwell = document.getElementById('imgmodalmaxwell');
+          var captionTextmaxwell = document.getElementById('captionmaxwell');
+          imgmaxwell.onclick = function(){
+            modalmaxwell.style.display = 'block';
+            modalImgmaxwell.src = this.src;
+            captionTextmaxwell.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgmaxwell.onclick = function() {
+            modalmaxwell.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modaltrevisan = document.getElementById('modaltrevisan');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgtrevisan = document.getElementById('imgtrevisan');
+          var modalImgtrevisan = document.getElementById('imgmodaltrevisan');
+          var captionTexttrevisan = document.getElementById('captiontrevisan');
+          imgtrevisan.onclick = function(){
+            modaltrevisan.style.display = 'block';
+            modalImgtrevisan.src = this.src;
+            captionTexttrevisan.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgtrevisan.onclick = function() {
+            modaltrevisan.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalcorrplot2 = document.getElementById('modalcorrplot2');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgcorrplot2 = document.getElementById('imgcorrplot2');
+          var modalImgcorrplot2 = document.getElementById('imgmodalcorrplot2');
+          var captionTextcorrplot2 = document.getElementById('captioncorrplot2');
+          imgcorrplot2.onclick = function(){
+            modalcorrplot2.style.display = 'block';
+            modalImgcorrplot2.src = this.src;
+            captionTextcorrplot2.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgcorrplot2.onclick = function() {
+            modalcorrplot2.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalcorrplot2bscale = document.getElementById('modalcorrplot2bscale');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgcorrplot2bscale = document.getElementById('imgcorrplot2bscale');
+          var modalImgcorrplot2bscale = document.getElementById('imgmodalcorrplot2bscale');
+          var captionTextcorrplot2bscale = document.getElementById('captioncorrplot2bscale');
+          imgcorrplot2bscale.onclick = function(){
+            modalcorrplot2bscale.style.display = 'block';
+            modalImgcorrplot2bscale.src = this.src;
+            captionTextcorrplot2bscale.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgcorrplot2bscale.onclick = function() {
+            modalcorrplot2bscale.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalinteractivenew = document.getElementById('modalinteractivenew');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imginteractivenew = document.getElementById('imginteractivenew');
+          var modalImginteractivenew = document.getElementById('imgmodalinteractivenew');
+          var captionTextinteractivenew = document.getElementById('captioninteractivenew');
+          imginteractivenew.onclick = function(){
+            modalinteractivenew.style.display = 'block';
+            modalImginteractivenew.src = this.src;
+            captionTextinteractivenew.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImginteractivenew.onclick = function() {
+            modalinteractivenew.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalAttempt2 = document.getElementById('modalAttempt2');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgAttempt2 = document.getElementById('imgAttempt2');
+          var modalImgAttempt2 = document.getElementById('imgmodalAttempt2');
+          var captionTextAttempt2 = document.getElementById('captionAttempt2');
+          imgAttempt2.onclick = function(){
+            modalAttempt2.style.display = 'block';
+            modalImgAttempt2.src = this.src;
+            captionTextAttempt2.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgAttempt2.onclick = function() {
+            modalAttempt2.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalAttempt2scale = document.getElementById('modalAttempt2scale');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgAttempt2scale = document.getElementById('imgAttempt2scale');
+          var modalImgAttempt2scale = document.getElementById('imgmodalAttempt2scale');
+          var captionTextAttempt2scale = document.getElementById('captionAttempt2scale');
+          imgAttempt2scale.onclick = function(){
+            modalAttempt2scale.style.display = 'block';
+            modalImgAttempt2scale.src = this.src;
+            captionTextAttempt2scale.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgAttempt2scale.onclick = function() {
+            modalAttempt2scale.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalbivplotscale = document.getElementById('modalbivplotscale');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgbivplotscale = document.getElementById('imgbivplotscale');
+          var modalImgbivplotscale = document.getElementById('imgmodalbivplotscale');
+          var captionTextbivplotscale = document.getElementById('captionbivplotscale');
+          imgbivplotscale.onclick = function(){
+            modalbivplotscale.style.display = 'block';
+            modalImgbivplotscale.src = this.src;
+            captionTextbivplotscale.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgbivplotscale.onclick = function() {
+            modalbivplotscale.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalold_map = document.getElementById('modalold_map');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgold_map = document.getElementById('imgold_map');
+          var modalImgold_map = document.getElementById('imgmodalold_map');
+          var captionTextold_map = document.getElementById('captionold_map');
+          imgold_map.onclick = function(){
+            modalold_map.style.display = 'block';
+            modalImgold_map.src = this.src;
+            captionTextold_map.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgold_map.onclick = function() {
+            modalold_map.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modaljuxtaposedex = document.getElementById('modaljuxtaposedex');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgjuxtaposedex = document.getElementById('imgjuxtaposedex');
+          var modalImgjuxtaposedex = document.getElementById('imgmodaljuxtaposedex');
+          var captionTextjuxtaposedex = document.getElementById('captionjuxtaposedex');
+          imgjuxtaposedex.onclick = function(){
+            modaljuxtaposedex.style.display = 'block';
+            modalImgjuxtaposedex.src = this.src;
+            captionTextjuxtaposedex.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgjuxtaposedex.onclick = function() {
+            modaljuxtaposedex.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalIceChunk = document.getElementById('modalIceChunk');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgIceChunk = document.getElementById('imgIceChunk');
+          var modalImgIceChunk = document.getElementById('imgmodalIceChunk');
+          var captionTextIceChunk = document.getElementById('captionIceChunk');
+          imgIceChunk.onclick = function(){
+            modalIceChunk.style.display = 'block';
+            modalImgIceChunk.src = this.src;
+            captionTextIceChunk.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgIceChunk.onclick = function() {
+            modalIceChunk.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalIceChunk = document.getElementById('modalIceChunk');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgIceChunk = document.getElementById('imgIceChunk');
+          var modalImgIceChunk = document.getElementById('imgmodalIceChunk');
+          var captionTextIceChunk = document.getElementById('captionIceChunk');
+          imgIceChunk.onclick = function(){
+            modalIceChunk.style.display = 'block';
+            modalImgIceChunk.src = this.src;
+            captionTextIceChunk.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgIceChunk.onclick = function() {
+            modalIceChunk.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalrgps_grid = document.getElementById('modalrgps_grid');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgrgps_grid = document.getElementById('imgrgps_grid');
+          var modalImgrgps_grid = document.getElementById('imgmodalrgps_grid');
+          var captionTextrgps_grid = document.getElementById('captionrgps_grid');
+          imgrgps_grid.onclick = function(){
+            modalrgps_grid.style.display = 'block';
+            modalImgrgps_grid.src = this.src;
+            captionTextrgps_grid.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgrgps_grid.onclick = function() {
+            modalrgps_grid.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modallawsim = document.getElementById('modallawsim');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imglawsim = document.getElementById('imglawsim');
+          var modalImglawsim = document.getElementById('imgmodallawsim');
+          var captionTextlawsim = document.getElementById('captionlawsim');
+          imglawsim.onclick = function(){
+            modallawsim.style.display = 'block';
+            modalImglawsim.src = this.src;
+            captionTextlawsim.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImglawsim.onclick = function() {
+            modallawsim.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalcommonfate = document.getElementById('modalcommonfate');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgcommonfate = document.getElementById('imgcommonfate');
+          var modalImgcommonfate = document.getElementById('imgmodalcommonfate');
+          var captionTextcommonfate = document.getElementById('captioncommonfate');
+          imgcommonfate.onclick = function(){
+            modalcommonfate.style.display = 'block';
+            modalImgcommonfate.src = this.src;
+            captionTextcommonfate.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgcommonfate.onclick = function() {
+            modalcommonfate.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modaltraj_plot = document.getElementById('modaltraj_plot');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgtraj_plot = document.getElementById('imgtraj_plot');
+          var modalImgtraj_plot = document.getElementById('imgmodaltraj_plot');
+          var captionTexttraj_plot = document.getElementById('captiontraj_plot');
+          imgtraj_plot.onclick = function(){
+            modaltraj_plot.style.display = 'block';
+            modalImgtraj_plot.src = this.src;
+            captionTexttraj_plot.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgtraj_plot.onclick = function() {
+            modaltraj_plot.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalbb_1 = document.getElementById('modalbb_1');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgbb_1 = document.getElementById('imgbb_1');
+          var modalImgbb_1 = document.getElementById('imgmodalbb_1');
+          var captionTextbb_1 = document.getElementById('captionbb_1');
+          imgbb_1.onclick = function(){
+            modalbb_1.style.display = 'block';
+            modalImgbb_1.src = this.src;
+            captionTextbb_1.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgbb_1.onclick = function() {
+            modalbb_1.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalbb_2 = document.getElementById('modalbb_2');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgbb_2 = document.getElementById('imgbb_2');
+          var modalImgbb_2 = document.getElementById('imgmodalbb_2');
+          var captionTextbb_2 = document.getElementById('captionbb_2');
+          imgbb_2.onclick = function(){
+            modalbb_2.style.display = 'block';
+            modalImgbb_2.src = this.src;
+            captionTextbb_2.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgbb_2.onclick = function() {
+            modalbb_2.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalwiggle = document.getElementById('modalwiggle');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgwiggle = document.getElementById('imgwiggle');
+          var modalImgwiggle = document.getElementById('imgmodalwiggle');
+          var captionTextwiggle = document.getElementById('captionwiggle');
+          imgwiggle.onclick = function(){
+            modalwiggle.style.display = 'block';
+            modalImgwiggle.src = this.src;
+            captionTextwiggle.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgwiggle.onclick = function() {
+            modalwiggle.style.display = 'none';
+          }
+</script>
+<script>
+        /* Get the modal*/
+          var modalfeaturecomparison4 = document.getElementById('modalfeaturecomparison4');
+        /* Get the image and insert it inside the modal - use its 'alt' text as a caption*/
+          var imgfeaturecomparison4 = document.getElementById('imgfeaturecomparison4');
+          var modalImgfeaturecomparison4 = document.getElementById('imgmodalfeaturecomparison4');
+          var captionTextfeaturecomparison4 = document.getElementById('captionfeaturecomparison4');
+          imgfeaturecomparison4.onclick = function(){
+            modalfeaturecomparison4.style.display = 'block';
+            modalImgfeaturecomparison4.src = this.src;
+            captionTextfeaturecomparison4.innerHTML = this.alt;
+          }
+          /* When the user clicks on the modalImg, close it*/
+          modalImgfeaturecomparison4.onclick = function() {
+            modalfeaturecomparison4.style.display = 'none';
+          }
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
