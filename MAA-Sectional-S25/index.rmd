@@ -151,7 +151,7 @@ Of common interest with trajectories is to discover patterns within their moveme
 ---
 class:primary
 
-# Importance of Arctic Sea Ice Crack Detection
+# Importance of Arctic Sea Ice Lead Detection
 
 + Sea ice serves as a barrier between the atmosphere and the ocean
 + Cracks, or leads, may form in the ice pack due to dynamic processes
@@ -563,7 +563,7 @@ class:primary
 # References
 <font size="1.5">
 ```{r, print_refs1, results='asis', echo=FALSE, warning=FALSE, message=FALSE}
-print(bib[[c("ansari_spatiotemporal_2020", "yuan_review_2017")]], 
+print(bib[[c("ansari_spatiotemporal_2020", "yuan_review_2017", "climate-viz", "schreyer_elastic_2006", "andrienko_supporting_2000", "spde-book", "peterson_evaluating_2011", "badgley_1961", "rinzivillo_visuallydriven_2008", "li-features", "chalbi_gestalt", "alais-gestalt-1998")]], 
       .opts = list(check.entries = FALSE, style = "html", bib.style = "authoryear")
       )
 ```
