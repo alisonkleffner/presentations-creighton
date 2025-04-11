@@ -468,37 +468,11 @@ Next, besides the bounding box, we wanted to derive a numerical assessment of "w
 
 ---
 class:primary
-# Feature Selection
-
-+ Not all characteristics of a trajectory are simultaneously relevant (Rinzivillo, Pedreschi, Nanni, and Giannotti, 2008)
-+ Clustering algorithm to assign trajectories to groups of similar
-movements 
-+ No label information to help evaluate feature importance, used visualization to make judgements (Li, Cheng, Wang, Morstatter, Trevino, Tang, and Liu, 2017).
-  - Redundant:  adding it to the clustering algorithm, while
-holding the other variables constant, does not change the assigned clusters.
-  - Relevance: help with cluster continuity
-
-.center[
-&lt;!-- Trigger the Modal --&gt;
-&lt;img id='imgfeaturecomparison4' src='images/feature-comparison4.png' alt='Subsets of Clusters to Determine Relevant Features' width='60%'&gt;
-&lt;!-- The Modal --&gt;
-&lt;div id='modalfeaturecomparison4' class='modal'&gt;
-  &lt;!-- Modal Content (The Image) --&gt;
-  &lt;img class='modal-content' id='imgmodalfeaturecomparison4'&gt;
-  &lt;!-- Modal Caption (Image Text) --&gt;
-  &lt;div id='captionfeaturecomparison4' class='modal-caption'&gt;&lt;/div&gt;
-&lt;/div&gt;
-]
-
-???
-
-Finally, not all characteristics of a trajectory are simultaneously relevant when analyzing trajectories, so we wanted to employ feature selection to assess relevancy. Since we could see the movement occurring in contiguous patches, we applied a clustering algorithm to find this groups of similar movements. So we have no label information (don't know true trajectories), we used  visualization to make judgements. So assigned each cluster a color, and output a single point of each trajectory with the assigned color onto a map. We classified redundant features as adding a feature to the clustering does not change the assigned cluster. Further, we wanted our features to help create continguous clusters. Did not text all possible subsets of features, just some I thought was relevant.  (Explain process). Plot 4 is the features selected.
-
----
-class:primary
 
 #Clustering Using All Data - Comparison
 
++ Clustering algorithm to assign trajectories to groups of similar
+movements 
 +  Can compare our results with deformation data found using a kinematic crack algorithm calculated using the RGPS data (Peterson and Sulsky, 2011)
   - Note that this image does not represent the true ice cracks, just the cracks determined by this method.
 
