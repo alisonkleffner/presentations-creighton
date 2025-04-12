@@ -103,10 +103,8 @@ write("", file = "js-addins.html")
 ## Visualization and Modeling of Sea Ice Trajectories
 #### Alison Kleffner
 #### Department of Mathematics, Creighton University
-##### `r fa("envelope", fill = "black")` [alisonkleffner@creighton.edu](email.address@creighton.edu)
-##### `r fa("home", fill = "black")` [https://alison-kleffner.netlify.app/](https://alison-kleffner.netlify.app/)
-##### `r fa("github", fill = "black")` [alisonkleffner](https://github.com/alisonkleffner)
-<br><br>
+
+<br><br><br><br>
 .medium[*Slides: https://alisonkleffner.github.io/presentations-creighton/MAA-Sectional-S25/index.html#1*]
 
 ---
